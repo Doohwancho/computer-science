@@ -14,7 +14,8 @@ Fields
 
 A. [Datastructure & Algorithm](https://github.com/Doohwancho/LeetCode.ps) :white_check_mark:\
 B. [Crafting a Compiler](https://github.com/Doohwancho/compiler) :soon:\
-x. Nand To Tetris\
+C. C :white_check_mark:\
+D. Nand To Tetris :soon:\
 x. Computer Systems: a Programmer's Perspective\
 x. Computer Networking: A Top-down Approach\
 x. Operating System Concepts\
