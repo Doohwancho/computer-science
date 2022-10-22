@@ -3,7 +3,17 @@
 Objective
 
 
-modularize computer science concepts 
+think in how computer would think, not how human would think(oop) 
+
+
+
+---\
+Approach 
+
+
+1. input -> computation -> output 
+2. build from scratch 
+3. modularize computer science concepts 
 
 
 
