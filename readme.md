@@ -23,7 +23,7 @@ Fields
 
 
 A. [Datastructure & Algorithm](https://github.com/Doohwancho/LeetCode.ps) :white_check_mark:\
-B. [Crafting a Compiler](https://github.com/Doohwancho/compiler) :soon:\
+B. [Crafting a Compiler](https://github.com/AcornPublishing/crafting-compiler/tree/master/Parser) :soon:\
 C. C :white_check_mark:\
 D. Nand To Tetris :soon:\
 E. [simple jvm parser in python](https://www.youtube.com/user/badmephisto) :white_check_mark:\
