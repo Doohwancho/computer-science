@@ -5,6 +5,10 @@ Objective
 understand how compiler works
 
 
+---\
+overview
+
+![alt image](./overview.png)
 
 
 ---\

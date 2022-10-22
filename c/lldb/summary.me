@@ -1,0 +1,28 @@
+---
+basics
+
+1. 디버깅 정보파일 생성
+g++ -std=c++17 *.cpp -g -o prog
+
+
+2. lldb(low level debugger) 실행
+lldb prog 
+
+
+2-1. run
+2-2. r 
+    breakpoint 없이 실행
+2-3. b
+    breakpoint 걸기 
+    ex. b main
+2-4. next | n
+    다음 줄 실행하기 
+2-5. step | s
+    함수 안으로 들어가기(step in)
+2-6. print [variable name] | p [variable name]
+    변수 값 보기(print variable)
+2-7. display [variable name]
+    변수 값 띄워놓고 next | step으로 넘어가면서 면하는거 보기 
+
+
+3. 모르겠으면? lldb help
