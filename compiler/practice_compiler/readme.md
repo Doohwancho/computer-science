@@ -48,7 +48,7 @@ Q. 최소 단위는 포인터+값 아닐까?\
 Q. 구문 분석기에서, 트리에 넣을 때, 넣을 순서를 먼저 정렬한 후에 넣는건가 아니면 넣으면서 순서 정렬하는 insert tree algorithm 쓰는건가?\
 Q. 인터프리터던 제너레이터던 트리를 돌 때, bfs로 도나 dfs로 도나?\ 
 Q. 인터프리터는 제너레이터+실행 명령어인가? 본질적으로 제너레이터+알파인가?\
-Q. 가상 머신이라는게, parser, scanner, generator가 돌 메모리 할당해준다는거 아닌가? 그러면 왜 굳이 가상이라는 단어를 붙였지? 그냥 메모리 할당해주는건데.\
+Q. 가상 머신이라는게, parser, scanner, generator가 돌 메모리 할당해준다는거 아닌가? 그러면 왜 굳이 가상이라는 단어를 붙였지? 그냥 메모리 할당해주는건데.
 
 
 
@@ -71,15 +71,22 @@ scanner(param)에 입력받은 애를 돌면서, 타입에 맞게 Token을 만�
 
 ## Q. 최소 단위는 포인터+값 아닐까?
 
-A. 어셈단 까지 가면 그렇겠지만, cpp단에서는 type:string으로 만든 Token이 최소단위가 됨. 
+A. 어셈단 까지 가면 그렇겠지만,
 
-## Q. 구문 분석기에서, 트리에 넣을 때, 넣을 순서를 먼저 정렬한 후에 넣는건가 아니면 넣으면서 순서 정렬하는 insert tree algorithm 쓰는건가?\
+Token.h에서 선언한 enum::Kind가 ( ; String 등 타입 선언해주고, 이걸 key삼고 value에 이름 매핑한게 
+Token.cpp에서 Token{Kind,string} 인 map임.
 
-## Q. 인터프리터던 제너레이터던 트리를 돌 때, bfs로 도나 dfs로 도나?\ 
+이게 최소단위가 되어, Scanner.cpp에서 input code in string을 스캔시, 각 단어마다 parse해서 저 Token단위로 쪼개서 list에 넣음.)
+ 
 
-## Q. 인터프리터는 제너레이터+실행 명령어인가? 본질적으로 제너레이터+알파인가?\
+## Q. 구문 분석기에서, 트리에 넣을 때, 넣을 순서를 먼저 정렬한 후에 넣는건가 아니면 넣으면서 순서 정렬하는 insert tree algorithm 쓰는건가?
 
-## Q. 가상 머신이라는게, parser, scanner, generator가 돌 메모리 할당해준다는거 아닌가? 그러면 왜 굳이 가상이라는 단어를 붙였지? 그냥 메모리 할당해주는건데.\
+## Q. 인터프리터던 제너레이터던 트리를 돌 때, bfs로 도나 dfs로 도나? 
+
+
+## Q. 인터프리터는 제너레이터+실행 명령어인가? 본질적으로 제너레이터+알파인가?
+
+## Q. 가상 머신이라는게, parser, scanner, generator가 돌 메모리 할당해준다는거 아닌가? 그러면 왜 굳이 가상이라는 단어를 붙였지? 그냥 메모리 할당해주는건데.
 
 
 
@@ -90,17 +97,18 @@ A. 어셈단 까지 가면 그렇겠지만, cpp단에서는 type:string으로 �
 
 ## input 
 
+```cpp
  string sourceCode = R""""(
     function main() {
       print 'Hello, World!';
     }
   )"""";
-
+```
 
 
 ## output 
 
-
+```
 KIND        STRING
 -----------------------
 function    function
@@ -113,7 +121,7 @@ print       print
 ;           ;
 }           }
 #EndOfToken
-
+```
 
 
 
