@@ -10,8 +10,7 @@ familiarize with c
 Approach
 
 
-1. leetcode
-2. build simple thing from scratch
+build simple thing from scratch
 
 
 
@@ -20,4 +19,22 @@ Approach
 concepts
 
 a. c-syntax :white_check_mark:\
-b. debugger - lldb for mac :white_check_mark:
+b. lldb - debugger for mac :white_check_mark:\
+c. cmake :white_check_mark:
+
+
+
+---\
+Todo
+
+
+c-1. cmake-for-all: cmake template :white_check_mark:
+
+
+
+
+---\
+Reference
+
+
+c-1. [cmake-for-all](https://github.com/kev0960/cmake-for-all)

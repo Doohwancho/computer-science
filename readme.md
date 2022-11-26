@@ -27,13 +27,12 @@ B. [Crafting a Compiler](https://github.com/AcornPublishing/crafting-compiler/tr
 C. C :white_check_mark:\
 D. Nand To Tetris :soon:\
 E. [simple jvm parser in python](https://www.youtube.com/user/badmephisto) :white_check_mark:\
+x. Verilog\
+x. assembly\
 x. Computer Systems: a Programmer's Perspective\
 x. Computer Networking: A Top-down Approach\
 x. Operating System Concepts\
-x. Clean Architecture\
-x. System Design Interview\
 x. Fundamental of Software Architecture\
 x. The Architecture of Open Source Applications\
 x. Grokking Simplicity\
-x. DDD
 
