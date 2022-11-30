@@ -2,6 +2,15 @@
 
 ![alt text](../overview.png)
 
+# how to compile and run?
+
+```cpp
+cd dir/
+clang++ *.cpp -std=c++17 -o main 
+./main
+```
+
+
 # prediction 1
 책 읽기 전
 
