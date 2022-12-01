@@ -25,13 +25,13 @@ Fields
 A. Computer Architecture\
 B. Operating System\
 C. Network\
-D. Datastructure && Algorithm\
-E. Compiler\
-F. C
+D. Datastructure\
+E. Algorithm\
+F. Compiler\
+G. C
 
 x. Verilog\
-x. assembly\
-
+x. assembly
 
 ---\
 Books
