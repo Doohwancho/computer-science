@@ -1,0 +1,18 @@
+{
+  "name": "simple-grpc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "큰돌의터전",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.5.4",
+    "@grpc/proto-loader": "^0.6.9",
+    "express": "^4.17.2",
+    "uuid": "^8.3.2"
+  }
+}

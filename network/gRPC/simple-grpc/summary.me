@@ -1,0 +1,50 @@
+---
+how to run?
+
+1. npm install
+2. node server.js
+3. node index.js
+4. localhost:3000
+
+
+
+---
+workflow
+
+localhost:3000 으로 요청하면,
+
+index.js 에서 서버로 /getAll 요청 보내는게 아니라,
+클라이언트한테 보낸 다음
+클라이언트는 grpc에 바인딩 되있는데
+grpc는 서버에서 제공하는 .getAll()을 중간에 핸들링 해줌.
+
+http request -> index.js -> client.js -> Customers.proto(grpc) -> server.js
+
+Customers.proto 보면 GetAll()의 반환타입이 rpc로 되어있는걸 확인 가능.
+server에서 정의한 customers는 json타입인데,
+내부적으로 json을 gRPC 타입으로 바꿔주나봄.
+
+
+
+---
+console.log
+
+{
+  customers: [
+    {
+      id: 'a68b823c-7ca6-44bc-b721-fb4d5312cafc',
+      name: 'John Bolton',
+      age: 23,
+      address: 'Address 1'
+    },
+    {
+      id: '34415c7c-f82d-4e44-88ca-ae2a1aaa92b7',
+      name: 'Mary Anne',
+      age: 45,
+      address: 'Address 2'
+    }
+  ]
+}
+
+
+
