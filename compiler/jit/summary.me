@@ -1,0 +1,24 @@
+---
+What is JIT?
+
+Whenever a program, while running, creates and runs some new executable code which was not part of the program when it was stored on disk
+
+Phase 1: create machine code at program run-time.
+Phase 2: execute that machine code, also at program run-time.
+
+Phase 1 -> referred to ../practice_compiler
+Phase 2 -> referred to this project
+
+
+---
+what is this project?
+
+
+heap메모리에 공간 0부터 2^10 까지 받아와서
+간단한 더하기 함수 넣는데 기계어로 넣고,
+그 기계어를 실행하는 프로그램이다.
+
+
+heap에 rwx 권한을 줘서 건드리는게 보안상 별로다라는게 step1,
+mmap으로 malloc을 구현한게 step2
+(malloc은 heap에 write할 땐 rw으로 가져오고, 실행할 땐 권한을 rx로 바꿔서 실행)

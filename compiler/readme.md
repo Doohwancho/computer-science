@@ -21,11 +21,15 @@ c. 인터프리터(Interpreter)\
 d. Generator(목적코드 생성)\
 e. Virtual Machine
 
+f. simple JVM compiler :white_check_mark:\
+g. JIT compile :white_check_mark:
 
 
 ---\
-Projects
+Reference
 
+a-e. 컴파일러 만들기: 컴퓨터 프로그램의 구조와 원리
 
-1. 컴파일러 만들기: 컴퓨터 프로그램의 구조와 원리
-2. [JelloVM](https://github.com/tsoding/JelloVM)
+f-1. [JelloVM](https://github.com/tsoding/JelloVM)
+
+g-1. [How to JIT - an introduction](https://eli.thegreenplace.net/2013/11/05/how-to-jit-an-introduction)
