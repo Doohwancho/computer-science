@@ -25,10 +25,9 @@ Fields
 A. Computer Architecture\
 B. Operating System\
 C. Network\
-D. Datastructure\
-E. Algorithm\
-F. Compiler\
-G. C
+D. Datastructure & Algorithm -> Leetcode\
+E. Compiler\
+F. C
 
 x. Verilog\
 x. assembly
