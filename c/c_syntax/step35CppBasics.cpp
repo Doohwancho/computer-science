@@ -25,7 +25,7 @@ int main()
 
 	//예제2
 	//a::n = 10;
-	//b::n = 20; 
+	//b::n = 20;
 	//2개의 n은 성이 다르기 때문에 별개의 n으로 인식됨.
 
 	//예제3
@@ -33,12 +33,12 @@ int main()
 	cin >> a >> b;//cin : 입력을 받음(형은 자동으로 알아들음)
 
 	cout << a << "+" << b << "=" << a + b << endl;
-	
+
 	.//예제4 - string
 	string str; //배열형태가 아니니 길이제한이 없음. 또한 string끼리 붙이기 용이
 	str = "Hello";
 	cout << str << endl;
-	
+
 
 	//예제5 - string
 	string name;
@@ -48,7 +48,7 @@ int main()
 
 	string message = "안녕하세요," + name + "님";
 	cout << message << endl;
-	
+
 
 	//예제6 - 변수의 초기화와 선언
 
@@ -75,6 +75,6 @@ int main()
 	}
 	cout << endl;
 	*/
-	
+
 }
 

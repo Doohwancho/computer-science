@@ -20,8 +20,8 @@ concepts
 
 a. c-syntax :white_check_mark:\
 b. lldb - debugger for mac :white_check_mark:\
-c. cmake :white_check_mark:
-
+c. cmake :white_check_mark:\
+d. curiousity regarding c, cpp
 
 
 ---\
@@ -30,6 +30,7 @@ Todo
 
 c-1. cmake-for-all: cmake template :white_check_mark:
 
+d-1. malloc vs new :white_check_mark:
 
 
 
