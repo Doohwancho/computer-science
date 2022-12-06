@@ -32,8 +32,8 @@ c-1. cmake-for-all: cmake template :white_check_mark:
 
 d-1. malloc vs new :white_check_mark:\
 d-2. double pointer :white_check_mark:\
-d-3. oop in c :white_check_mark:
-
+d-3. oop in c :white_check_mark:\
+d-4. memory size comparison, stack vs heap :white_check_mark:
 
 
 ---\
