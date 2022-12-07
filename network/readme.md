@@ -8,13 +8,15 @@ Modularize Network
 ---\
 Fields
 
-a. TCP\
-b. UDP\
+a. protocol: TCP\
+b. protocol: UDP\
 c. buffer\
-d. gRPC\
-e. web server
+d. protocol: gRPC\
+e. web server\
+f. event loop
 
-
+x. protocol: http2\
+x. protocol: HAProxy
 
 ---\
 Concepts
@@ -31,6 +33,8 @@ d-1. simple gRPC using node, express :white_check_mark:
 
 e-1. simple web server in c :white_check_mark:
 
+f-1. event loop from scratch in python :white_check_mark:
+
 ---\
 Reference
 
@@ -44,3 +48,6 @@ c-1,2. [Buffer related to socket.recv()](https://cumulativebackendstack.blogspot
 d-1. [simple gRPC using node, express](https://blog.naver.com/jhc9639/222642712063)
 
 e-1. [simple web server in c](https://github.com/infraredCoding/cerveur.git)
+
+f-5. [Explaining event loop in 100 lines of code](https://iximiuz.com/en/posts/explain-event-loop-in-100-lines-of-code/)
+

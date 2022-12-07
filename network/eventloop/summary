@@ -1,0 +1,42 @@
+---
+case1) 비동기 처리시 발생하는 문제점
+
+```
+// sync code
+data = sync_sock.recv(1024);
+print('Here is your data', data);
+
+// async code
+function on_read(data) {
+  print(data);
+}
+async_sock.recv(1024, on_read);
+print('No data right after recv()');
+```
+
+
+비동기로 보냈는데, non-blocking이라 올때까지 안기다리고 바로 print 실행 -> null
+
+
+---
+case2) reactive model로 해결
+
+
+```
+function on_sent() {
+  function on_read(data) {
+    print(data);
+  }
+  sock.recv(1024, on_read);
+}
+
+sock.send(bytes('foo'), on_sent);
+```
+
+1. 서버에 data를 보냄과 동시에 on_sent라는 함수도 보냄.
+2. 서버는 연산 끝나면, 결과값을 client로 보내줌
+3. 결과값을 받은 client는 출력.
+
+
+
+
