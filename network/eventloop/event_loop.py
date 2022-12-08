@@ -11,32 +11,32 @@ import sys
 import time
 
 
+# single threaded asynchronous event loop
 class EventLoop:
   def __init__(self):
-    self._queue = Queue()
+    self._queue = Queue() # queue 생성
     self._time = None
 
   def run(self, entry_point, *args):
     self._execute(entry_point, *args)
 
-    while not self._queue.is_empty():
-      fn, mask = self._queue.pop(self._time)
+    while not self._queue.is_empty(): # while loop
+      fn, mask = self._queue.pop(self._time) # 앞에서 하나씩 뽑아서 실행
       self._execute(fn, mask)
 
-    self._queue.close()
+    self._queue.close() # 다 뽑았으면 free(queue)
 
-  def register_fileobj(self, fileobj, callback):
+  def register_fileobj(self, fileobj, callback): # queue.add()
     self._queue.register_fileobj(fileobj, callback)
 
-  def unregister_fileobj(self, fileobj):
+  def unregister_fileobj(self, fileobj): # queue.remove()
     self._queue.unregister_fileobj(fileobj)
 
-  def set_timer(self, duration, callback):
+  def set_timer(self, duration, callback):  # A timer is a way to sleep (i.e. postpone the execution) in the asynchronous code.
     self._time = hrtime()
-    self._queue.register_timer(self._time + duration,
-                   lambda _: callback())
+    self._queue.register_timer(self._time + duration, lambda _: callback()) # sock.(connect | recv | sendall)
 
-  def _execute(self, callback, *args):
+  def _execute(self, callback, *args): # callback 실행
     self._time = hrtime()
     try:
       callback(*args)  # new callstack starts
@@ -46,15 +46,19 @@ class EventLoop:
 
 
 class Queue:
+    # The Queue class is just a facade for several underlying sub-queues.
+    # 1 subqueue deals with async I/O
+    # 1 subqueue deals with timers
+
   def __init__(self):
-    self._selector = selectors.DefaultSelector()
+    self._selector = selectors.DefaultSelector() # queue for async I/O callbacks boils down to a single selector.select() call which returns us a list of activated file descriptors with attached callbacks and operation masks (EVENT_READ or EVENT_WRITE). And by activated I mean - performing a corresponding to the mask I/O operation on a file descriptor will not block the execution of the main thread.
     self._timers = []
     self._timer_no = 0
     self._ready = collections.deque()
 
   def register_timer(self, tick, callback):
     timer = (tick, self._timer_no, callback)
-    heapq.heappush(self._timers, timer)
+    heapq.heappush(self._timers, timer) #timers are stored in a priority queue(heapq). The priority is determined by the tick value. earlier, the better.
     self._timer_no += 1
 
   def register_fileobj(self, fileobj, callback):
@@ -65,7 +69,8 @@ class Queue:
   def unregister_fileobj(self, fileobj):
     self._selector.unregister(fileobj)
 
-  def pop(self, tick):
+  def pop(self, tick): #important! It returns us a next callback ready to be executed. it blocks execution of main thread.
+    # On each iteration, the event loop tries to synchronously pull out the next callback from the queue. If there is no callback to execute at the moment, pop() blocks the main thread. When the callback is ready, the event loop executes it. The execution of a callback always happens synchronously. Each callback execution starts a new call stack which lasts until the utter synchronous call in the call tree with a root in the original callback.
     if self._ready:
       return self._ready.popleft()
 
@@ -133,7 +138,7 @@ class set_timer(Context):
 class socket(Context):
   def __init__(self, *args):
     self._sock = _socket.socket(*args)
-    self._sock.setblocking(False)
+    self._sock.setblocking(False) # Important! IO is non-blocking
     self.evloop.register_fileobj(self._sock, self._on_event)
     # 0 - initial
     # 1 - connecting
