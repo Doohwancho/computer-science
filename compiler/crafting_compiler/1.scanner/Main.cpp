@@ -1,7 +1,7 @@
 ﻿#include "Main.h"
 
 //src code -> 숫자, 문자, 특수문자 등 타입에 따라 다른 토큰 부여
-auto main(int argc, char** argv)->int {  
+auto main(int argc, char** argv)->int {
   string sourceCode = R""""(
     function main() {
       print 'Hello, World!';

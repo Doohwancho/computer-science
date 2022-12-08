@@ -1,0 +1,47 @@
+
+# Goal of Scanner
+
+source code -> token
+
+
+
+# input
+
+```cpp
+ string sourceCode = R""""(
+    function main() {
+      print 'Hello, World!';
+    }
+  )"""";
+```
+
+
+# output
+
+```
+KIND        STRING
+-----------------------
+function    function
+#identifier main
+(           (
+)           )
+{           {
+print       print
+#String     Hello, World!
+;           ;
+}           }
+#EndOfToken
+```
+
+
+
+# Scanner/ 코드 해석
+
+1. 일단 Kind라는 이름의 enum만들어서 나올 수 있는 타입 다 때려박음. (라던지 String이라던지, ;이라던지 등..
+2. Token이라는 클래스에 key:value로 Kind:매칭되는 string 묶음
+3. Scanner.cpp에서 scan할건데, Integer이건, String이건, WhiteSpace건, OperatorAndPunctuator이건, 미리 정해서 enum에 담아넣고, scan(code_in_string)으로 읽는데, 각 타입마다, 맞게 처리해서 Token{Kind:string}을 만들어 list에 담음.
+4. Main에서 이 list를 돌면서 프린트 찍으면 output이 위처럼 나오는 것.
+
+
+
+

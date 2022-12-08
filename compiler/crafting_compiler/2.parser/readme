@@ -1,0 +1,35 @@
+---
+Goal of Parser
+
+
+Scanner로 source code -> token 한 것을 가지고 구조를 잡음. AST(abstract syntax tree)
+
+
+---
+input
+
+
+```
+KIND        STRING
+-----------------------
+function    function
+#identifier main
+(           (
+)           )
+{           {
+print       print
+#String     Hello, World!
+;           ;
+}           }
+#EndOfToken
+```
+
+
+---
+output
+
+FUNCTION main:
+  BLOCK:
+    PRINT:
+      "Hello, World!"
+

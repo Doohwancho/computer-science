@@ -40,7 +40,7 @@ static auto skipCurrent()->void;
 static auto skipCurrent(Kind)->void;
 static auto skipCurrentIf(Kind)->bool;
 
-static vector<Token>::iterator current;
+static vector<Token>::iterator current; //이게 핵심! 여기에 토큰들을 파싱해서 넣음
 
 auto parse(vector<Token> tokens)->Program* {
   auto result = new Program();

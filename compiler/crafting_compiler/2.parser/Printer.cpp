@@ -6,7 +6,7 @@ using std::endl;
 
 static auto indent(int)->void;
 
-auto printSyntaxTree(Program* program)->void {
+auto printSyntaxTree(Program* program)->void { //Program*이 여기서는 AST tree인 덧?
   for (auto& node: program->functions)
     node->print(0);
 }

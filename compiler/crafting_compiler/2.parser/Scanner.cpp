@@ -7,7 +7,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-enum class CharType {
+enum class CharType { //scan한 문자의 종류를 나타내는 enum
   Unknown,
   WhiteSpace,
   NumberLiteral,
@@ -23,10 +23,10 @@ static auto scanOperatorAndPunctuator()->Token;
 static auto getCharType(char)->CharType;
 static auto isCharType(char, CharType)->bool;
 
-static string::iterator current;
+static string::iterator current; //index를 가리키는 iterator
 
 auto scan(string sourceCode)->vector<Token> {
-  vector<Token> result;
+  vector<Token> result; //token을 저장할 vector
   sourceCode += '\0';
   current = sourceCode.begin();
   while (*current != '\0') {
@@ -36,7 +36,7 @@ auto scan(string sourceCode)->vector<Token> {
         break;
       }
       case CharType::NumberLiteral: {
-        result.push_back(scanNumberLiteral());
+        result.push_back(scanNumberLiteral()); //token을 종류에 따라 vector에 저장
         break;
       }
       case CharType::StringLiteral: {
