@@ -1,4 +1,4 @@
-﻿#include <any>
+﻿
 #include <map>
 #include <list>
 #include <vector>
@@ -6,7 +6,6 @@
 #include "Datatype.h"
 #include "Code.h"
 #include <cmath>
-
 
 /*
  *

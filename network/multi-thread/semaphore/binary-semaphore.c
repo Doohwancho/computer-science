@@ -15,8 +15,17 @@
  *
  * sem_wait() and sem_post() are atomic **
  *
- * if it works as a mutex, why not use a mutex?
+ * Q. if it works as a mutex, why not use a mutex?
  *
+ * 1. lightweight than mutex -> suspended thread에 wakeup call 보내는건 user space -> kernel space 전환해야하는데, 이 때, 비용이 크다.
+ * 2. more flexible than mutex
+ * -> as they can be used for multiple threads and multiple processes, whereas a mutex is generally used for only one thread or process.
+ *
+ *
+ * Q. why we should not use semaphore?
+ *
+ * 1. sem_wait() and sem_post() are atomic -> atomic operation is slow
+ * 2.
  */
 
 
