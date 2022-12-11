@@ -157,3 +157,45 @@ TAT = CT - AT
 WT = TAT - BT
 RT = ST - AT
 */
+
+
+//quantum 텀을 두고, n개의 프로세스를 concurrent하게 처리하는 방법
+
+//quantum: amount of time that is allocated to each process before the scheduler moves onto the next process. It is also known as time-slice or time-quantum. When a process' quantum expires, the scheduler will preempt the current process and move onto the next process in the queue.
+
+//console.log
+
+//quantum을 10ms로 설정.
+//프로세스들 돌아가면서 처리함.
+
+
+//Q. when os uses round-robin algorithm?
+
+//A. Round-robin scheduling is used when a process needs to be given a fair share of the CPU's time. It is also used when multiple processes need to access the same resource, such as a printer, and the scheduler needs to ensure that each process gets a fair share of the resource.
+
+
+/* Enter the number of processes: 3 */
+/* Enter time quantum: 10 */
+/* Enter arrival time of process 1: 10 */
+/* Enter burst time of process 1: 100 */
+
+/* Enter arrival time of process 2: 5 */
+/* Enter burst time of process 2: 5 */
+
+/* Enter arrival time of process 3: 1 */
+/* Enter burst time of process 3: 1 */
+
+
+/* #P      AT      BT      ST      CT      TAT     WT      RT */
+
+/* 1       10      100     1       16      6       -94     -9 */
+
+/* 2       5       5       10      15      10      5       5 */
+
+/* 3       1       1       1       106     105     104     0 */
+
+/* Average Turnaround Time = 40.33 */
+/* Average Waiting Time = 5.00 */
+/* Average Response Time = -1.33 */
+/* CPU Utilization = 100.00% */
+/* Throughput = 0.20 process/unit time */
