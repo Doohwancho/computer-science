@@ -1,4 +1,8 @@
 #include <stdio.h>
+
+
+//shorest job first: process 중 가장 낮은 burst time(젤 빨리 끝나는 놈) 먼저 처리
+
 int main()
 {
     int A[100][4]; // Matrix for storing Process Id, Burst
