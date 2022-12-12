@@ -43,4 +43,5 @@ Reference
 
 c-1. [cmake-for-all](https://github.com/kev0960/cmake-for-all)
 
-d-5. [fork()](https://www.crocus.co.kr/451)
+d-5. [fork()](https://www.crocus.co.kr/451) \
+d-6. [multiple fork()](https://www.crocus.co.kr/452)
