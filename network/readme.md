@@ -54,10 +54,10 @@ c-1,2. [Buffer related to socket.recv()](https://cumulativebackendstack.blogspot
 
 d-1. [simple gRPC using node, express](https://blog.naver.com/jhc9639/222642712063)
 
-e-1. [simple web server in c](https://github.com/infraredCoding/cerveur.git)
+e-1. [simple web server in c](https://github.com/infraredCoding/cerveur.git) \
+e-2. [multi client server chat](https://github.com/codophobia/Multi-Client-Server-Chat/blob/master/server.c)
 
 f-1. [Explaining event loop in 100 lines of code](https://iximiuz.com/en/posts/explain-event-loop-in-100-lines-of-code/)
 
 g-1. [How to write a multithreaded webserver using condition variables](https://www.youtube.com/watch?v=P6Z5K8zmEmc&list=PL9IEJIKnBJjH_zM5LnovnoaKlXML5qh17&index=7) \
-g-2. [Safety and Speed Issues with Threads](https://www.youtube.com/watch?v=9axu8CUvOKY&list=PL9IEJIKnBJjFZxuqyJ9JqVYmuFZHr7CFM&index=3) \
-g-3. [What is a semaphore? How do they work?](https://www.youtube.com/watch?v=ukM_zzrIeXs&list=PL9IEJIKnBJjFZxuqyJ9JqVYmuFZHr7CFM&index=9)
+g-2. [Safety and Speed Issues with Threads](https://www.youtube.com/watch?v=9axu8CUvOKY&list=PL9IEJIKnBJjFZxuqyJ9JqVYmuFZHr7CFM&index=3)
