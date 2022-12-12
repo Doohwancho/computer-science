@@ -23,7 +23,8 @@ x. protocol: HAProxy
 Concepts
 
 
-a-1. simple client-server socket connection in python :white_check_mark:
+a-1. simple client-server socket connection in python :white_check_mark:\
+a-2. tcp/ip 다중 통신 소스 코드 using fork :white_check_mark:
 
 b-1. simple client-server socket connection in python :white_check_mark:
 
@@ -46,7 +47,8 @@ g-3. binary semaphore :white_check_mark:
 Reference
 
 
-a-1. [simple client-server socket connection in python](https://cumulativebackendstack.blogspot.com/2021/03/tcp-with-socket-programming-in-python-1.html)
+a-1. [simple client-server socket connection in python](https://cumulativebackendstack.blogspot.com/2021/03/tcp-with-socket-programming-in-python-1.html) \
+a-2. [소켓 프로그래밍 - (13) TCP/IP 다중 통신 소스 코드 (fork 이용)](https://www.crocus.co.kr/463)
 
 b-1. [simple client-server socket connection in python](https://cumulativebackendstack.blogspot.com/2021/03/udp-with-python-udpuser-datagram.html)
 
