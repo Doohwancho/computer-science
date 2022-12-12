@@ -12,7 +12,8 @@ Concepts
 
 a. process\
 b. thread\
-c. scheduling algorithm
+c. scheduling algorithm\
+d. pintos
 
 
 
@@ -30,3 +31,4 @@ c-2. [non-preemptive: shortest job first](https://www.geeksforgeeks.org/program-
 c-3. [non-preemptive: priority](https://github.com/codophobia/process-scheduling-algorithms/blob/master/nonpreemptive_priority.cpp) :white_check_mark:\
 c-4. [preemptive: round robin](https://github.com/codophobia/process-scheduling-algorithms) :white_check_mark:
 
+d-1. install pintos :white_check_mark:

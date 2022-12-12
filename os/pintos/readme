@@ -1,0 +1,23 @@
+---
+how to install & run?
+
+
+1. cd ~/dev/tree/computer-science/os/pintos
+2. git clone https://github.com/ThierrySans/CSCC69-Pintos
+3. follow instruction here: https://hub.docker.com/r/loeper/stanford-cs212-pintos-vscode-dev-environment
+4. cd /pintos/src/utils
+5. make
+6. cd /pintos/src/threads/
+7. mkdir build
+8. cd build
+9. make
+10. pintos -q run alarm-zero
+11. pintos --QEMU -- -q run alarm-zero
+12. make grade
+
+etc. docker run --rm --name pintos -v $(pwd):/pintos -it thierrysans/pintos bash
+
+reference: https://www.youtube.com/watch?v=7D77e5bm8lw
+
+
+

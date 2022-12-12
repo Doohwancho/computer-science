@@ -1,0 +1,17 @@
+{
+	"name": "CS 212 Pintos Development",
+	"runArgs": [
+		"--init"
+	],
+	// we use a pre-built docker image to speed up the vscode setup
+	// note: it is a multi-arch image which supports arm64 and amd64 architectures
+	"image": "loeper/stanford-cs212-pintos-vscode-dev-environment:latest",
+	"settings": { /* please set settings inside the workspace-specific config in .vscode folder */},
+	"extensions": [
+		"ms-vscode.cpptools@1.7.1",
+		"eamodio.gitlens",
+		"webfreak.debug@0.25.1",
+		"13xforever.language-x86-64-assembly"
+	],
+	"remoteUser": "vscode"
+}
