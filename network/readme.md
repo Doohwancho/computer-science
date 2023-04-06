@@ -8,30 +8,21 @@ Modularize Network
 ---\
 Fields
 
-a. protocol: TCP\
-b. protocol: UDP\
+a. network protocols
 c. buffer\
-d. protocol: gRPC\
 e. web server\
 f. event loop\
-g. multi-thread
+g. multi-thread\
 
-x. protocol: http2\
-x. protocol: HAProxy
+
+x. HAProxy
 
 ---\
 Concepts
 
 
-a-1. simple client-server socket connection in python :white_check_mark:\
-a-2. tcp/ip 다중 통신 소스 코드 using fork :white_check_mark:
-
-b-1. simple client-server socket connection in python :white_check_mark:
-
 c-1. stream splitted by buffer size :white_check_mark:\
 c-2. server includes payload size in response header for client to parse easily :white_check_mark:
-
-d-1. simple gRPC using node, express :white_check_mark:
 
 e-1. simple web server in c :white_check_mark:
 
