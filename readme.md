@@ -1,4 +1,3 @@
-
 ---\
 Objective
 
@@ -14,10 +13,9 @@ Fields
 A. Computer Architecture\
 B. Operating System\
 C. Network\
-D. Datastructure & Algorithm -> Leetcode\
+D. assembly\
 E. Compiler\
 F. C\
 Z. explore
 
-x. Verilog\
-x. assembly
+x. Verilog
