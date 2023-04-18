@@ -10,8 +10,8 @@ A. hardware layer
 1. boolean logic gate :white_check_mark:
 2. boolean arithmetic :white_check_mark:
 3. sequential logic :white_check_mark:
-4. Von Neumann architecture
-5. machine code
+4. machine code :white_check_mark:
+5. Von Neumann architecture
 
 </br>
 
@@ -812,14 +812,25 @@ reset is mux closest to the register. because if reset is true, it doesn't matte
 ref: https://youtu.be/lo54MEu7u9A?list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&t=1090
 
 
-## 4장. Von Neumann architecture
+## 4장. machine code
 
-![](images/2023-04-17-20-58-56.png)
+![](images/2023-04-18-20-35-57.png)
+
+0 == A instruction | 1 == C instruction
+
+first line is A instruction(because it starts with 0)\
+A instruction says, put this number in this register.\
+@2 == put number 2 in 'A' register.
+
+next line is C instruction(because it starts with 1)\
+bit 2nd, 3rd are un-used (grey numbers)\
+bit 4th indicates whether the alu will treat the register as a direct or as an index into memory(blue)\
+bit 5~10th tells alu what computations to do. (take a look at input of alu above, skyblue)\
+bit 11~13th tells what combinations of a,m,d registers the results of the operations to be stored in. (orange)\
+bit 14~16th tells the cpu under what conditions, it should jump(goto) that is to change the program counter to new destination.
 
 
 
-
-## 5장. machine code
 
 
 ex.
@@ -838,10 +849,173 @@ ex.
 The above code adds all consecutive integers between 0 and some number, storing the sum in a variable sum.
 
 
+## 실습
+
+1. sh tools/Assembler.sh
+2. load 04/mult/Mult.asm or 04/fill/Fill.asm
+3. load .hack file into the sh tools/CPUEmulator.sh and run the program
+
+### part1. Fill.asm -> Fill.hack
+
+1. Fill.asm
+```
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/04/Fill.asm
+
+// Runs an infinite loop that listens to the keyboard input.
+// When a key is pressed (any key), the program blackens the screen,
+// i.e. writes "black" in every pixel. When no key is pressed, the
+// program clears the screen, i.e. writes "white" in every pixel.
+
+// Put your code here.
+
+  (START)
+    // There are 8192 registers dealing with the screen
+    // initialize numScreenRegistersToPaint to 8192
+    @8192
+    D=A
+    @numScreenRegistersToPaint
+    M=D
+
+    // Set the value of var currentScreenRegister to the first register of the screen
+    @SCREEN
+    D=A
+    @currentScreenRegister
+    M=D
+
+    // Set D to the value of keyboard. 0=> No press // 1=> press
+    @KBD
+    D=M
+
+    // If no press => set paint color to white
+    @SETWHITE
+    D; JEQ
+
+    // If press => set paint color to black
+    @SETBLACK
+    0; JMP
+
+  // Set var color to 0
+  (SETWHITE)
+    @color
+    M=0
+
+    @PAINT
+    0;JMP
+
+  // Set var color to -1
+  (SETBLACK)
+    @color
+    M=-1
+
+    @PAINT
+    0;JMP
+
+  // Paint the screem
+  (PAINT)
+    // Set D to value of color
+    @color
+    D=M
+
+    // Set the value of A to the screen register number and modify its value
+    // to have the value of color (0 white; -1 black)
+    @currentScreenRegister
+    A=M
+    M=D
+
+    // Add one to currentScreenRegister (to paint the right pixels in the next
+    // loop)
+    @currentScreenRegister
+    M=M+1
+
+    // Subtract 1 from numScreenRegistersToPaint
+    @numScreenRegistersToPaint
+    M=M-1
+    D=M
+
+    // if numScreenRegistersToPaint is 0 => go to start program
+    @START
+    D; JEQ
+
+    // if numScreenRegistersToPaint is not 0, continue painting
+    @PAINT
+    0; JMP
+
+```
+
+Fill.hack
+```
+0010000000000000
+1110110000010000
+0000000000010000
+1110001100001000
+0100000000000000
+1110110000010000
+0000000000010001
+1110001100001000
+0110000000000000
+1111110000010000
+0000000000001110
+1110001100000010
+0000000000010010
+1110101010000111
+0000000000010010
+1110101010001000
+0000000000010110
+1110101010000111
+0000000000010010
+1110111010001000
+0000000000010110
+1110101010000111
+0000000000010010
+1111110000010000
+0000000000010001
+1111110000100000
+1110001100001000
+0000000000010001
+1111110111001000
+0000000000010000
+1111110010001000
+1111110000010000
+0000000000000000
+1110001100000010
+0000000000010110
+1110101010000111
+```
+
+![](images/2023-04-18-20-45-42.png)
+
+Assembler로 .asm의 어셈블리어를 0101의 기계어로 line by line 번역하는걸 볼 수 있다.
+
+
+
+### part 2. CPUEmulator -> run Fill.hack
+
+![](images/2023-04-18-20-47-34.png)
+
+Fill.hack의 machine code가 RAM 메모리 주소에 값을 바꾸는걸 line by line으로 확인 가능하다.
+
+
+## 5장. Von Neumann architecture
+
+![](images/2023-04-17-20-58-56.png)
+
+### 17. Memory
+![](images/2023-04-18-20-38-56.png)
+
+
+### 18. CPU
+
+
+
+
 ## 6장. assembler
 
 assembly language -> binary machine instruction
 
+![](images/2023-04-18-20-21-27.png)
 
 ## 7장. virtual machine - stack arthmetic
 
