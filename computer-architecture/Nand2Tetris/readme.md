@@ -11,9 +11,7 @@ A. hardware layer
 2. boolean arithmetic :white_check_mark:
 3. sequential logic :white_check_mark:
 4. machine code :white_check_mark:
-5. Von Neumann architecture
-
-</br>
+5. Von Neumann architecture :white_check_mark:
 
 B. software layer
 
@@ -417,6 +415,11 @@ CHIP Inc16 {
     HalfAdder (a=in[15], b=carry15 , sum=out[15], carry=carry16);
 }
 ```
+
+![](images/2023-04-18-21-26-29.png)
+
+incrementor + program counter
+
 
 ### 11.ALU's HDL
 
@@ -1073,12 +1076,257 @@ i번 loop해서 R0를 결과값에 더하기를 반복한다.
 
 ![](images/2023-04-17-20-58-56.png)
 
+1. instruction decoding
+	- what are all these control bits in the instruction telling us to do?
+2. instruction execution
+	- the ALU is going to operate on these registers/inputs, and send the results to these registers/outputs
+3. fetch next instruction
+	- jump, or not?
+
 ### 17. Memory
+
 ![](images/2023-04-18-20-38-56.png)
+
+monitor의 메모리 주소는 16374~24575\
+keyboard는 메모리 주소는 24576~
+
+input과 메모리 주소를 넣어서 해당 메모리 주소의 값을 변경한다.
+
+
+memory chip modules should use
+1. memory we built using gates
+2. maps memory to screens & keyboards (so that we can read and write from screen & keyboard)
+
+
+```Memory.hdl
+ * the range 0x4000-0x5FFF results in accessing the screen memory
+ * map. Access to address 0x6000 results in accessing the keyboard
+ * memory map. The behavior in these addresses is described in the
+ * Screen and Keyboard chip specifications given in the book.
+ */
+
+CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+    // The first 16K go from 15-bit 0s(all zeros) to 01111111111111
+    // The next 8K (screen) go from 100000000000000 to 101111111111111
+    // The keyboard is 110000000000000
+    // So basically if we get address[14..15]:
+    // 11 => keyboard
+    // 10 => screen
+    // 00 - 01 => RAM
+
+    DMux4Way (in=load, sel=address[13..14], a=firstRAM, b=secondRAM, c=screenLoad, d=kbdLoad);
+
+    Or (a=firstRAM, b=secondRAM, out=ramLoad);
+    RAM16K (in=in, load=ramLoad, address=address[0..13], out=ramOut);
+
+    Screen (in=in, load=screenLoad, address=address[0..12], out=screenOut);
+    Keyboard (out=kbdOut);
+
+    Mux4Way16 (a=ramOut, b=ramOut, c=screenOut, d=kbdOut, sel=address[13..14], out=out);
+}
+```
+
+features)
+
+Only the upper 16K+8K+1 words of the Memory chip are used.
+Access to address>0x6000 is invalid. Access to any address in the range 0x4000-0x5FFF results in accessing the screen memory map.
+
+Access to address 0x6000 results in accessing the keyboard memory map.
+The behavior in these addresses is described in the Screen and Keyboard chip specifications given in the book.
+
+
+
 
 
 ### 18. CPU
 
+![](images/2023-04-18-21-07-32.png)
+
+- input
+1. inM: contains the piece of memory which is indexed by current value of a register in the cpu. depending on the state of cpu, this might be ignored.
+2. instruction: instruction the cpu is going to execute
+3. reset: signal whether to restart the program(reset the program counter to 0)
+
+- output
+1. outM
+2. writeM: if it's 1, we will write the content of 'outM' into  memory location(addressM)
+3. addressM
+4. pc: indicates what the next value of program counter should be.
+
+---
+case1) core of CPU without control bits
+![](images/2023-04-18-21-27-56.png)
+
+
+```CPU.asm
+// Note this implementation of the CPU doesn't use the given Register A
+// and D so in order to test upload `CPU-external.tst`
+// Also this implementation uses Mux8Way, a chip not required by any project
+// but I found useful to have.
+
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input
+ * holds the value of this location. If the current instruction needs
+ * to write a value to M, the value is placed in outM, the address
+ * of the target location is placed in the addressM output, and the
+ * writeM control bit is asserted. (When writeM==0, any value may
+ * appear in outM). The outM and writeM outputs are combinational:
+ * they are affected instantaneously by the execution of the current
+ * instruction. The addressM and pc outputs are clocked: although they
+ * are affected by the execution of the current instruction, they commit
+ * to their new values only in the next time step. If reset==1 then the
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather
+ * than to the address resulting from executing the current instruction.
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M?
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // 1. Divide instruction into its components
+    // if A instruction => instructionType == 1
+    // if C instruction => instructionType == 0
+    And (a=true, b=instruction[15], out=isInstructionC);
+    Not (in=isInstructionC, out=isInstructionA);
+
+    // if C instruction the 4th bit of instruction indicates which input to the ALU
+    // either input from memory or from registerA
+    Or (a=instruction[12], b=false, out=inputType);
+
+    // Set the appropriate bit values for the ALU computation
+    Or (a=instruction[11], b=false, out=zx);
+    Or (a=instruction[10], b=false, out=nx);
+    Or (a=instruction[9], b=false, out=zy);
+    Or (a=instruction[8], b=false, out=ny);
+    Or (a=instruction[7], b=false, out=f);
+    Or (a=instruction[6], b=false, out=no);
+
+    // Set the appropriate values for where we need to store the output of Register
+    And (a=instruction[5], b=isInstructionC, out=storeInA);
+    And (a=instruction[4], b=isInstructionC, out=storeInD);
+    And (a=instruction[3], b=isInstructionC, out=writeM);
+
+    // Compute the 8 bools for different jump options
+    // No jump
+    Not (in=true, out=nojmp);
+    // Jump
+    Not (in=false, out=jmp);
+    // is Zero
+    And (a=true, b=zr, out=jeq);
+    // is Neg
+    And (a=true, b=ng, out=jlt);
+    // is not Zero
+    Not (in=zr, out=jne);
+    // is Pos
+    Not (in=jle, out=jgt);
+    // is Zero or Pos
+    Or (a=zr, b=jgt, out=jge);
+    // is Zero or Neg
+    Or (a=zr, b=ng, out=jle);
+
+    // Compute whether we need to jump in the next instruction
+    Mux8Way (a=nojmp, b=jgt, c=jeq, d=jge, e=jlt, f=jne, g=jle, h=jmp, sel=instruction[0..2], out=maybeJump);
+    And (a=isInstructionC, b=maybeJump, out=shouldJump);
+
+    // possible value to load to registerA
+    Mux16 (a=outALU, b=instruction, sel=isInstructionA, out=registerAVal);
+    // Only modify value of register A if isInstructionA or storeInA
+    Or (a=isInstructionA, b=storeInA, out=shouldLoadA);
+    Register (in=registerAVal, load=shouldLoadA, out=registerA, out[0..14]=addressM);
+
+    // Set value of register D to output of ALU if storeInD is 1
+    Register (in=outALU, load=storeInD, out=registerD);
+
+    // if inputType is 1 then use M as the ALU input, otherwise user Register A
+    // as the input
+    Mux16 (a=registerA, b=inM, sel=inputType, out=inputALU);
+
+    ALU (x=registerD, y=inputALU, zx=zx, nx=nx, zy=zy ,ny=ny ,f=f ,no=no, zr=zr, ng=ng, out=outALU);
+
+    Or16 (a=false, b=outALU, out=outM);
+
+    // Calculate the counter. Remember that reset has priority over load and
+    // load has priority over inc, that's why we set inc to true (always the default
+    // action) should be to increase the counter.
+    PC (in=registerA,load=shouldJump,inc=true,reset=reset, out[0..14]=pc);
+
+}
+```
+
+---
+case2) suggested by 'Tea Leaves'
+
+![](images/2023-04-18-21-33-52.png)
+
+
+### 19. Computer
+
+
+
+```Computer.asm
+// Since our CPU implements its own A and D registers to test run with
+// these files: ComputerAdd-external.tst,  ComputerMax-external.tst
+// ComputerRect-external.tst
+
+
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/Computer.hdl
+
+/**
+ * The HACK computer, including CPU, ROM and RAM.
+ * When reset is 0, the program stored in the computer's ROM executes.
+ * When reset is 1, the execution of the program restarts.
+ * Thus, to start a program's execution, reset must be pushed "up" (1)
+ * and "down" (0). From this point onward the user is at the mercy of
+ * the software. In particular, depending on the program's code, the
+ * screen may show some output and the user may be able to interact
+ * with the computer via the keyboard.
+ */
+
+CHIP Computer {
+
+    IN reset;
+
+    PARTS:
+    Memory(in=outMemory ,load=writeM ,address=addressM ,out=inMemory);
+    ROM32K (address=pc, out=instruction);
+    CPU (reset=reset, instruction=instruction, inM=inMemory, addressM=addressM, writeM=writeM, outM=outMemory, pc=pc);
+}
+```
+
+- test scripts
+
+1. add.hack
+2. max.hack
+3. rect.hack (draw a rectable)
 
 
 
