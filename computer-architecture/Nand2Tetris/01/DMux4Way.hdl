@@ -11,19 +11,25 @@
  *                {0, 0, 0, in} if sel == 11
  */
 
+// Note: bits are indexed starting from the right, so if `sel == 01`
+// then `sel[0] == 1` and `sel[1] == 0`
+
 CHIP DMux4Way {
     IN in, sel[2];
     OUT a, b, c, d;
 
-	PARTS:
-	Not(in=sel[0], out=notsel0);
-	Not(in=sel[1], out=notsel1);
-	And(a=notsel0, b=notsel1, out=sela);
-	And(a=sela, b=in, out=a);
-	And(a=sel[0], b=notsel1, out=selb);
-	And(a=selb, b=in, out=b);
-	And(a=notsel0, b=sel[1], out=selc);
-	And(a=selc, b=in, out=c);
-	And(a=sel[0], b=sel[1], out=seld);
-	And(a=seld, b=in, out=d);
+
+    PARTS:
+    Not (in=sel[0], out=notsel0);
+    Not (in=sel[1], out=notsel1);
+
+    And (a=notsel0, b=notsel1, out=sel00);
+    And (a=sel[0], b=notsel1, out=sel01);
+    And (a=notsel0, b=sel[1], out=sel10);
+    And (a=sel[0], b=sel[1], out=sel11);
+
+    And (a=in, b=sel00, out=a);
+    And (a=in, b=sel01, out=b);
+    And (a=in, b=sel10, out=c);
+    And (a=in, b=sel11, out=d);
 }

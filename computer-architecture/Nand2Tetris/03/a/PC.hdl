@@ -16,12 +16,17 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-	Inc16(in=regout, out=plusone);
-	Mux16(a=false, b=plusone, sel=inc, out=incout);
-	Mux16(a=incout, b=in, sel=load, out=loadout);
-	Mux16(a=loadout, b=false, sel=reset, out=toload);
-	Or(a=load, b=reset, out=loadorreset);
-	Or(a=loadorreset, b=inc, out=loadflag);
-    Register(in=toload, load=loadflag, out=regout);
-	Or16(a=regout, b=regout, out=out);
+    // Compute the 3 possibilites
+    // Decide what to output
+    Not16 (in=true, out=resetVal);
+    Mux16 (a=false, b=in, sel=load, out=loadVal);
+    Inc16 (in=prevOut , out=incOut);
+    Mux16 (a=false, b=incOut, sel=inc, out=incVal);
+
+    Mux16 (a=prevOut, b=incVal, sel=inc, out=incResult);
+    Mux16 (a=incResult, b=loadVal, sel=load, out=loadResult);
+    Mux16 (a=loadResult, b=resetVal, sel=reset, out=result);
+
+    Register (in=result, load=true, out=prevOut);
+    Register (in=result, load=true, out=out);
 }

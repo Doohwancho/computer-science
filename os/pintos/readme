@@ -5,19 +5,58 @@ how to install & run?
 1. cd ~/dev/tree/computer-science/os/pintos
 2. git clone https://github.com/ThierrySans/CSCC69-Pintos
 3. follow instruction here: https://hub.docker.com/r/loeper/stanford-cs212-pintos-vscode-dev-environment
-4. cd /pintos/src/utils
-5. make
-6. cd /pintos/src/threads/
-7. mkdir build
-8. cd build
-9. make
-10. pintos -q run alarm-zero
-11. pintos --QEMU -- -q run alarm-zero
-12. make grade
 
-etc. docker run --rm --name pintos -v $(pwd):/pintos -it thierrysans/pintos bash
+build
+$ cd /pintos/src/utils
+$ make
+	
+$ cd /pintos/src/threads
+$ make
+
+test if it built correctly
+$ pintos -q run alarm-zero
+$ pintos --QEMU -- -q run alarm-zero
+$ make grade
 
 reference: https://www.youtube.com/watch?v=7D77e5bm8lw
 
+
+
+
+---
+source tree overview
+
+threads/
+    Source code for the base kernel, which you will modify starting in project 1.
+userprog/
+    Source code for the user program loader, which you will modify starting with project 2.
+vm/
+    An almost empty directory. You will implement virtual memory here in project 3.
+filesys/
+    Source code for a basic file system. You will use this file system starting with project 2, but you will not modify it until project 4.
+devices/
+    Source code for I/O device interfacing: keyboard, timer, disk, etc. You will modify the timer implementation in project 1. Otherwise you should have no need to change this code.
+lib/
+    An implementation of a subset of the standard C library. The code in this directory is compiled into both the Pintos kernel and, starting from project 2, user programs that run under it. In both kernel code and user programs, headers in this directory can be included using the #include <...> notation. You should have little need to modify this code.
+lib/kernel/
+    Parts of the C library that are included only in the Pintos kernel. This also includes implementations of some data types that you are free to use in your kernel code: bitmaps, doubly linked lists, and hash tables. In the kernel, headers in this directory can be included using the #include <...> notation.
+lib/user/
+    Parts of the C library that are included only in Pintos user programs. In user programs, headers in this directory can be included using the #include <...> notation.
+tests/
+    Tests for each project. You can modify this code if it helps you test your submission, but we will replace it with the originals before we run the tests.
+examples/
+    Example user programs for use starting with project 2.
+misc/
+utils/
+    These files may come in handy if you decide to try working with Pintos on your own machine. Otherwise, you can ignore them.
+
+
+---
+trivia
+
+
+Pintos originated as a replacement for Nachos with a similar design. Since then Pintos has greatly diverged from the Nachos design. Pintos differs from Nachos in two important ways. First, Pintos runs on real or simulated 80x86 hardware, but Nachos runs as a process on a host operating system. Second, Pintos is written in C like most real-world operating systems, but Nachos is written in C++.
+
+Why the name "Pintos"? First, like nachos, pinto beans are a common Mexican food. Second, Pintos is small and a "pint" is a small amount. Third, like drivers of the eponymous car, students are likely to have trouble with blow-ups.
 
 

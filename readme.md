@@ -16,7 +16,7 @@ B. Operating System\
 C. Network\
 D. Datastructure & Algorithm -> Leetcode\
 E. Compiler\
-F. C
+F. C\
 Z. explore
 
 x. Verilog\

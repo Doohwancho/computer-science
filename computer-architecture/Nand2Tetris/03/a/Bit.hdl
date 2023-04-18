@@ -9,12 +9,15 @@
  *                 else out does not change (out[t+1] = out[t])
  */
 
+// In clocked chips we can use multiple `out` and those multiple `out`
+// Think of intermediate variables as initialized with a 0 value
+
 CHIP Bit {
     IN in, load;
     OUT out;
 
     PARTS:
-    Mux(a=dffout, b=in, sel=load, out=muxout);
-	DFF(in=muxout, out=dffout);
-	Or(a=dffout, b=dffout, out=out);
+    Mux (a=prevResult, b=in, sel=load, out=result);
+    DFF (in=result, out=prevResult);
+    DFF (in=result, out=out);
 }
