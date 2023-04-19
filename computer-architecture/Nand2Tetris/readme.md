@@ -1,8 +1,3 @@
-# summary
-
-![](images/2023-04-17-19-56-27.png)
-![](images/2023-04-17-19-56-43.png)
-
 # index
 
 A. hardware layer
@@ -15,7 +10,7 @@ A. hardware layer
 
 B. software layer
 
-6. assembler
+6. assembler :white_check_mark:
 7. virtual machine - stack arthmetic
 8. virtual machine - program control
 9. compiler I - syntax analysis
@@ -23,6 +18,12 @@ B. software layer
 11. operating system
 12. high level language
 
+
+# summary
+
+![](images/2023-04-17-19-56-27.png)
+![](images/2023-04-17-19-56-43.png)
+![](images/nand2tetris-index.jpg)
 
 # todos
 
@@ -819,19 +820,22 @@ ref: https://youtu.be/lo54MEu7u9A?list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&t=1090
 
 ![](images/2023-04-18-20-35-57.png)
 
-0 == A instruction | 1 == C instruction
+A instruction -> starts with 0\
+C instruction -> starts with 1
 
-first line is A instruction(because it starts with 0)\
-A instruction says, put this number in this register.\
-@2 == put number 2 in 'A' register.
 
-next line is C instruction(because it starts with 1)\
-bit 2nd, 3rd are un-used (grey numbers)\
-bit 4th indicates whether the alu will treat the register as a direct or as an index into memory(blue)\
-bit 5~10th tells alu what computations to do. (take a look at input of alu above, skyblue)\
-bit 11~13th tells what combinations of a,m,d registers the results of the operations to be stored in. (orange)\
-bit 14~16th tells the cpu under what conditions, it should jump(goto) that is to change the program counter to new destination.
+A instruction
+- red - first line is A instruction(because it starts with 0)
+- green - A instruction says, put this number in this register.
+	- ex. @2 == put number 2 in 'A' register.
 
+C instruction
+- red - next line is C instruction, because it starts with 1
+- grey - bit 2nd, 3rd are un-used
+- blue - bit 4th indicates whether the alu will treat the register as a direct or as an index into memory
+- skyblue - bit 5~10th tells alu what computations to do. (take a look at input of alu above)
+- orange - bit 11~13th tells what combinations of a,m,d registers the results of the operations to be stored in.
+- pink - bit 14~16th tells the cpu under what conditions, it should jump(goto) that is to change the program counter to new destination.
 
 
 
@@ -1332,9 +1336,398 @@ CHIP Computer {
 
 ## 6장. assembler
 
-assembly language -> binary machine instruction
+![](images/2023-04-18-20-35-57.png)
 
-![](images/2023-04-18-20-21-27.png)
+A instruction -> starts with 0\
+C instruction -> starts with 1
+
+
+A instruction
+- red - first line is A instruction(because it starts with 0)
+- green - A instruction says, put this number in this register.
+	- ex. @2 == put number 2 in 'A' register.
+
+C instruction
+- red - next line is C instruction, because it starts with 1
+- grey - bit 2nd, 3rd are un-used
+- blue - bit 4th indicates whether the alu will treat the register as a direct or as an index into memory
+- skyblue - bit 5~10th tells alu what computations to do. (take a look at input of alu above)
+- orange - bit 11~13th tells what combinations of a,m,d registers the results of the operations to be stored in.
+- pink - bit 14~16th tells the cpu under what conditions, it should jump(goto) that is to change the program counter to new destination.
+
+---
+### assembler in python
+
+Q. 아래 assembly 언어를 어떻게 binary machine code(.hack)로 변환하는 어셈블러를 만들지?
+
+A. needs 3 parts
+1. symbol table
+2. parser module
+	- step1. assembly language -> token
+3. code module
+	- step2. token -> machine code
+	- ex
+		1. dest
+		2. comp
+		3. jump
+
+
+```assembly
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/06/max/Max.asm
+
+// Computes R2 = max(R0, R1)  (R0,R1,R2 refer to  RAM[0],RAM[1],RAM[2])
+
+   @R0
+   D=M              // D = first number
+   @R1
+   D=D-M            // D = first number - second number
+   @OUTPUT_FIRST
+   D;JGT            // if D>0 (first is greater) goto output_first
+   @R1
+   D=M              // D = second number
+   @OUTPUT_D
+   0;JMP            // goto output_d
+(OUTPUT_FIRST)
+   @R0
+   D=M              // D = first number
+(OUTPUT_D)
+   @R2
+   M=D              // M[2] = D (greatest number)
+(INFINITE_LOOP)
+   @INFINITE_LOOP
+   0;JMP            // infinite loop
+
+```
+
+1. 먼저 @R0, @INFINITE_LOOP 같은 애들한테 숫자를 매핑해주는 token, symbol table 필요
+2. symbol table에는 screen, keyboard같은 애들의 메모리 주소도 있으면 좋겠다.
+3. 어셈블리어를 token으로 파싱하는 메서드 필요
+4. token을 binary machine code로 파싱하는 메서드 필요
+
+
+
+
+
+```assembler.py
+# Example: python assembler.py "max/Max.asm"
+
+import sys
+
+if __name__ != '__main__':
+    print 'Please run as a self-conatined program'
+
+//step01 - symbol(token 정의)
+symbols = {
+    'R0': 0,
+    'R1': 1,
+    'R2': 2,
+    'R3': 3,
+    'R4': 4,
+    'R5': 5,
+    'R6': 6,
+    'R7': 7,
+    'R8': 8,
+    'R9': 9,
+    'R1O': 10,
+    'R11': 11,
+    'R12': 12,
+    'R13': 13,
+    'R14': 14,
+    'R15': 15,
+    'SCREEN': 16384, //모니터 draw등 할 때 메모리 주소
+    'KBD': 24576, //키보드 io 할 때 메모리 주소
+    'SP': 0, //memory address of pointer
+    'LCL': 1, //memory address of pointer
+    'ARG': 2, //memory address of pointer
+    'THIS': 3, //memory address of pointer
+    'THAT': 4 //memory address of pointer
+}
+next_address = 16 //예약어0~15 이후에 자유롭게 값을 입력할 메모리 주소. 입력하면 +1.
+
+
+//removes comments (starting with "//") and whitespaces from a line.
+def remove_comments_and_whitespace(line):
+    without_comments = line.split('/')[0]
+    return without_comments.replace(' ', '')
+
+
+//reads an input assembly file and returns a list of instructions with comments and whitespaces removed.
+def get_instructions(hack_filename):
+    hack_text = open(hack_filename, 'r')
+
+    instructions = []
+    for line in hack_text.read().split('\r\n'):
+        stripped = remove_comments_and_whitespace(line)
+        if stripped:
+            instructions.append(stripped)
+
+    return instructions
+
+//adds a new symbol to the symbol table(new memory address) or returns its existing value.
+def parse_symbol(symbol):
+    global next_address
+    if symbol not in symbols:
+        symbols[symbol] = next_address
+        next_address += 1
+
+    return symbols[symbol]
+
+//converts an integer to a binary string of a specified bit size.
+def int_to_bin(num, bit_size=16):
+    bin_num = bin(num)[2:]
+    return (bit_size - len(bin_num)) * '0' + bin_num
+
+//translates an A-instruction (an address or a symbol) into a 16-bit binary string.
+def parse_a_instruction(instruction):
+    address = instruction[1:]
+    try:
+        return int_to_bin(int(address))
+    except ValueError:
+        return int_to_bin(parse_symbol(address))
+
+// translate the 'computation' parts of a C-instruction into their respective binary representations.
+def get_bin_comp(comp):
+    return {
+        '0': '0101010',
+        '1': '0111111',
+        '-1': '0111010',
+        'D': '0001100',
+        'A': '0110000',
+        '!D': '0001101',
+        '!A': '0110001',
+        '-D': '0001111',
+        '-A': '0110011',
+        'D+1': '0011111',
+        'A+1': '0110111',
+        'D-1': '0001110',
+        'A-1': '0110010',
+        'D+A': '0000010',
+        'D-A': '0010011',
+        'A-D': '0000111',
+        'D&A': '0000000',
+        'D|A': '0010101',
+        'M': '1110000',
+        '!M': '1110001',
+        '-M': '1110011',
+        'M+1': '1110111',
+        'M-1': '1110010',
+        'D+M': '1000010',
+        'D-M': '1010011',
+        'M-D': '1000111',
+        'D&M': '1000000',
+        'D|M': '1010101'
+    }[comp]
+
+// translate the 'destination' parts of a C-instruction into their respective binary representations.
+def get_bin_dest(dest):
+    dest_list = ['0', '0', '0']
+    if not dest:
+        return ''.join(dest_list)
+    if 'A' in dest:
+        dest_list[0] = '1'
+    if 'D' in dest:
+        dest_list[1] = '1'
+    if 'M' in dest:
+        dest_list[2] = '1'
+    return ''.join(dest_list)
+
+
+// translate the 'jump' parts of a C-instruction into their respective binary representations.
+def get_bin_jmp(jmp):
+    if not jmp:
+        return '000'
+    return {
+        'JGT': '001',
+        'JEQ': '010',
+        'JGE': '011',
+        'JLT': '100',
+        'JNE': '101',
+        'JLE': '110',
+        'JMP': '111'
+    }[jmp]
+
+
+//translates a C-instruction into a 16-bit binary string.
+def parse_c_instruction(instruction):
+    bin_output = '111'
+    dest = None
+    jmp = None
+
+    if '=' in instruction:
+        [dest, instruction] = instruction.split('=')
+    if ';' in instruction:
+        [comp, jmp] = instruction.split(';')
+    else:
+        comp = instruction
+
+    bin_output += get_bin_comp(comp)
+    bin_output += get_bin_dest(dest)
+    bin_output += get_bin_jmp(jmp)
+    return bin_output
+
+##################--------- DRIVER CODE  -------######################  # NOQA
+
+try:
+    hack_filename = sys.argv[1]
+except IndexError:
+    sys.exit('Please add a .asm file as an argument of the assembler')
+
+# 1. Get a list of instructions from input file
+instructions = get_instructions(hack_filename)
+
+# 2. Loop through the instructions and store the loops in the symbols table
+counter = 0
+for idx, val in enumerate(instructions):
+    if val[0] == '(' and val[len(val) - 1] == ')':
+        loop = val.replace('(', '').replace(')', '')
+        symbols[loop] = idx - counter
+        counter += 1
+
+# 3. Create the output by modifying the extension of the input file
+filename = hack_filename.split('.asm')[0]
+
+output_file = filename + '.hack'
+output = open(output_file, 'w')
+
+
+# 4. Convert each instruction in its binary representation and write it to
+# the output file
+for instruction in instructions:
+    if instruction[0] == '(':
+        continue
+
+    elif instruction[0] == '@':
+        binary_instruction = parse_a_instruction(instruction)
+
+    else:
+        binary_instruction = parse_c_instruction(instruction)
+
+    output.write(binary_instruction + '\r\n')
+
+```
+
+### A-instruction vs C-instruction
+
+in 'Hack' assembly language, the assembly instructions are divided into two types: A-instructions and C-instructions.
+
+A-instruction (Address instruction):
+
+A-instructions are used to set the address register, also called the A-register, to a specified value. They are represented by a line starting with the '@' symbol followed by a non-negative decimal number or a symbol, which can be a variable or a label.
+
+For example:
+
+```assembly
+@21 // Sets the A-register to the value 21
+@LOOP // Sets the A-register to the address associated with the symbol LOOP
+```
+
+In the binary representation, A-instructions have a 16-bit format where the first bit is 0, followed by a 15-bit address:
+
+```binary-machine-code
+0xxxxxxxxxxxxxxx
+```
+
+C-instruction (Computation instruction):
+
+C-instructions are used for computation and control flow. They specify a computation to be performed on the A-register and/or the data register (D-register), an optional destination for storing the computation result, and an optional jump condition based on the computation result. C-instructions have three parts: destination (dest), computation (comp), and jump (jmp), with the following syntax:
+
+```
+dest=comp;jmp
+```
+
+For example:
+
+```
+D=A // Stores the value of the A-register in the D-register
+M=D+1 // Computes D+1 and stores the result in the memory location pointed to by the A-register (M)
+D;JGT // If D > 0, jumps to the instruction at the address stored in the A-register
+```
+
+In the binary representation, C-instructions have a 16-bit format where the first three bits are 1s, followed by the binary codes for comp (7 bits), dest (3 bits), and jmp (3 bits):
+
+```assembly
+111accccccdddddjjj
+```
+
+In summary, A-instructions are used to set the address register's value, while C-instructions are used for computations and control flow, specifying computation, destination, and jump conditions.
+
+
+### 'A', 'D', and 'M' are mnemonics used in C-instructions
+
+Q. what is this 'A', 'D' and 'M' from assembler.py?
+
+```python
+
+// translate the 'computation' parts of a C-instruction into their respective binary representations.
+def get_bin_comp(comp):
+    return {
+        '0': '0101010',
+        '1': '0111111',
+        '-1': '0111010',
+        'D': '0001100',
+        'A': '0110000',
+        '!D': '0001101',
+        '!A': '0110001',
+        '-D': '0001111',
+        '-A': '0110011',
+        'D+1': '0011111',
+        'A+1': '0110111',
+        'D-1': '0001110',
+        'A-1': '0110010',
+        'D+A': '0000010',
+        'D-A': '0010011',
+        'A-D': '0000111',
+        'D&A': '0000000',
+        'D|A': '0010101',
+        'M': '1110000',
+        '!M': '1110001',
+        '-M': '1110011',
+        'M+1': '1110111',
+        'M-1': '1110010',
+        'D+M': '1000010',
+        'D-M': '1010011',
+        'M-D': '1000111',
+        'D&M': '1000000',
+        'D|M': '1010101'
+    }[comp]
+
+// translate the 'destination' parts of a C-instruction into their respective binary representations.
+def get_bin_dest(dest):
+    dest_list = ['0', '0', '0']
+    if not dest:
+        return ''.join(dest_list)
+    if 'A' in dest:
+        dest_list[0] = '1'
+    if 'D' in dest:
+        dest_list[1] = '1'
+    if 'M' in dest:
+        dest_list[2] = '1'
+    return ''.join(dest_list)
+```
+
+'A', 'D', and 'M' are mnemonics used in C-instructions to represent specific registers or memory locations involved in the computation
+
+1. 'A': Represents the A-register (Address register). The A-register stores a 16-bit value, which can be an address or a data value.
+2. 'D': Represents the D-register (Data register). The D-register stores a 16-bit data value and is often used to hold intermediate results of computations.
+3. 'M': Represents the memory location pointed to by the A-register. 'M' is used to read from or write to the memory address stored in the A-register.
+
+- summary
+1. A 는 주소를 가르키는 포인터. 데이터 최종적으로 저장하는 메모리 주소.
+2. D는 데이터를 가르키는 포인터. alu 연산 결과값 잠시 담아놓는 곳
+3. M은 A(주소를 가르키는 포인트)를 가르키는 포인터. A 주소를 read / write할 떄 쓰임
+
+---
+
+example)
+In C-instructions, these mnemonics are used in the computation (comp), destination (dest), and jump (jmp) parts. Here are some examples of how they are used in C-instructions:
+
+1. D=A: The value in the A-register is copied to the D-register.
+2. M=D+1: The value of D-register + 1 is computed and stored in the memory location pointed to by the A-register.
+3. D=D&M: The bitwise AND of the D-register and the value at the memory location pointed to by the A-register is computed and stored in the D-register.
+
 
 ## 7장. virtual machine - stack arthmetic
 
