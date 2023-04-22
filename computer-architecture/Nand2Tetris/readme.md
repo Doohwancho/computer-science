@@ -25,7 +25,7 @@ B. software layer
 ![](images/2023-04-17-19-56-43.png)
 ![](images/nand2tetris-index.jpg)
 
-# todos
+# chapters
 
 ## 1장. boolean logic gate
 
@@ -308,6 +308,14 @@ gate를 조합하여 half-adder, adder를 만들고,
 2진수의 '보수' 성질을 이용하여 +,- 계산기(Arithmetic Logic Unit, ALU)를 만든다.
 (곱셈, 나눗셈은 software layer에서 처리)
 
+```
+0000 0000 0000 0011
+0000 0000 0000 0101
+ADD
+```
+
+2진수의 덧셈, 뺄셈 구현하기.
+
 
 ### 8. Half-Adder's HDL
 
@@ -564,26 +572,68 @@ computer는 oscilator를 이용해 voltage가 한번 0 -> +1 -> -1 -> 0 돌아�
 input 'D' is changing, but output 'Q' does NOT change, until clock advances to next cycle.
 
 
-nand2tetris의 data flip-flop은 delay, hold on a value by '1 clock cycle'
+nand2tetris의 data flip-flop은 delay, hold on a value by 1 clock cycle
 
 
-
+---
 
 1. data flip-flop
+	- out(t) = in(t-1)
 2. bit
+	- out(t) = out(t-1)
 3. 16bit-register
 4. RAM memory(RAM8, RAM64, ...)
-5. Program Counter(PC.hdl)
+	- random access memory
+	- device must allow random addresses to be accessed in the same amount of time, and accepts the following inputs:
+		1. load: a bit that indicates whether to read or write data
+		2. address: the address to access
+		3. data: the data to write to address, if load is set.
+	- its parameter must includes..
+		1. width: the number of bits per register
+		2. size: the number of registers
+5. Program Counter
+	- PC.hdl
 
 with these, we can maintain values across time.
 
 
 ### 12. data flip flop's HDL
 
+flip flop
 ![](images/2023-04-18-19-38-06.png)
 
+DFF gate
+![](images/2023-04-22-21-20-02.png)
 
 
+---
+step1. initial state
+
+![](images/2023-04-22-21-11-12.png)
+
+we do not know the output yet.
+
+---
+step2. saving a state
+
+![](images/2023-04-22-21-11-59.png)
+
+input (1,1) -> (0,1) 으로 바꿀 때, output(1,0)이 되는데,
+이 때, input(1,1) 다시 toggle해도 output이 바뀌지 않음.
+memory!
+
+remembering 1 bit of data = flip flop
+
+---
+step3. reset memory
+
+![](images/2023-04-22-21-16-11.png)
+
+input을 (1,0) 하면 기억했던걸 버리고 output(0,1) 상태가 된다.
+
+
+
+---
 ```
 // This file is part of www.nand2tetris.org
 // and the book "The Elements of Computing Systems"
@@ -612,6 +662,15 @@ self-referencing circuit\
 
 
 ### 13. bit's HDL
+
+out(t) = out(t-1)
+
+
+![](images/2023-04-22-21-21-28.png)
+
+![](images/2023-04-22-21-21-40.png)
+
+
 
 ![](images/2023-04-18-19-32-31.png)
 
@@ -709,14 +768,31 @@ CHIP Register {
 
 ### 15. RAM8's HDL
 
+![](images/2023-04-22-21-27-00.png)
+
+1. in
+	- input data
+2. load
+	- deciding whether we save it
+3. address
+	- telling the ram where to save the data, or which slot do we want to peek at this moment.
+
+
 
 64bit (8 register) RAM with memory bank
 
-challenge:\
-how to you load new data into the circuits, while still allowing you to persist old value, that are already in the circuits, when new data is not being loaded?
+---
+RAM is volatile, which means if we turn off the power of the computer, everything in the ram is gone. But our hard disk or flash drive are non_volatile memories, they can store states and can keep them there forever.
+
+---
+best part about the RAM is that though we have thousands of addresses in the ram,\
+but we can use O(1) time to get the value of the mem location that we want,
+the beauty lies in the Muxer, and Demuxer.
+
+if it’s a 16K RAM system, the Muxer will use only 10 digits to locate the desired location, which is really an elegant design.
 
 
-
+---
 ```
 // This file is part of www.nand2tetris.org
 // and the book "The Elements of Computing Systems"
@@ -754,9 +830,20 @@ CHIP RAM8 {
     Mux8Way16 (a=registerA, b=registerB, c=registerC, d=registerD, e=registerE, f=registerF, g=registerG, h=registerH, sel=address, out=out);
 }
 ```
+challenge:\
+how to load new data into the circuits, while still allowing you to persist old value, that are already in the circuits, when new data is not being loaded?
+
 
 
 ### 16. Program Counter's HDL
+
+![](images/2023-04-22-21-00-10.png)
+
+counter는 시간 개념을 부여
+
+![](images/2023-04-22-21-55-51.png)
+
+
 
 ```
 // This file is part of www.nand2tetris.org
@@ -777,6 +864,7 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
+
 	//case1) explained by Tea Leaves
 	Register(in=resetMuxOut, load=true, out=out, out=regOut);
 	Inc16(in=regOut, out=incOut);
@@ -806,6 +894,11 @@ CHIP PC {
 }
 ```
 
+The output of the PC is actually an address. The address to a ROM location that the program is written on.
+
+
+
+---
 if -> Multiplexor(MUX)
 
 1. if(reset[t] == 1) -> throw that away!
@@ -814,6 +907,9 @@ reset is mux closest to the register. because if reset is true, it doesn't matte
 
 
 ref: https://youtu.be/lo54MEu7u9A?list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&t=1090
+
+
+
 
 
 ## 4장. machine code
@@ -1730,16 +1826,120 @@ In C-instructions, these mnemonics are used in the computation (comp), destinati
 
 
 ## 7장. virtual machine - stack arthmetic
+### 2 tier compiliation process
 
+![](images/2023-04-21-22-07-35.png)
 
 different CPU have different machine languages
 
+device마다 high level language(source code)를 각 기기의 machine code로 번역 불가.
+
+---
+
+![](images/2023-04-21-22-09-39.png)
+
+write once, run everywhere
+
+ex. java does not translate .java directly into machine language.
+1. hello.java -> java compiler -> vm code(bytecode)
+2. jvm이 bytecode를 각 device에 맞게 bytecode -> assembly -> binary machine code
+
+![](images/2023-04-22-19-58-09.png)
 
 
+.vm -> .asm 로 변환해주는 virtual machine compiler 만드는 것.
+
+### overview
+
+- meta
+	- 가상화란 하드웨어를 소프트웨어로 구현한거다.
+	- .jack -> .vm -> .asm -> .hack
+		1. compiler가 .jack -> .vm
+		2. virtual machine이 .vm -> .asm
+		3. assembler가 .asm -> .hack
+		4. cpu loads .hack
+- .java -> .class (byte code, vm code)
+	- VM I - Stack Arithmetic
+		- stack arithmetic
+			- pop operand from stack
+			- performs operations on them
+			- push result back on the stack
+		- arithmetic & logical command
+			- add
+			- sub
+			- neg
+			- eq
+			- gt
+			- it
+			- and
+			- or
+			- not
+		- memory access command
+			- push
+			- pop
+		- virtual memory mapping
+			- static
+			- function
+			- stack
+				- pointer
+				- local
+				- argument
+			- heap
+				- this
+				- that
+	- VM II - Program Control
+		- program flow command
+			- label xxx
+			- goto xxx
+			- if-goto xxx
+		- function calling command (subroutine calling)
+			- explaination for understanding
+				1. subroutine == procedure == function == method
+				2. stack
+					- LIFO on function from global stack
+			- funcf n
+				- (f)
+				- Repeat K times
+				- push 0
+			- call f m
+				- Push return-address
+				- Push LCL
+				- Push ARG
+				- Push THIS
+				- Push THAT
+				- ARG = SP - n - 5
+				- LCL = SP
+				- Goto f
+			- return
+				- FRAME = LCL
+				- RET = ^(FRAME - 5)
+				- \*ARG = pop()
+				- SP = ARG + 1
+				- THAT = \*(FRAME - 1)
+				- THIS = \*(FRAME - 2)
+				- ARG = \*(FRAME - 3)
+				- LCL = \*(FRAME - 4)
+				- Goto RET
+		- Bootstrap Code
+			- SP = 256
+			- call sys.init
+				- call os class init functions
+				- call Main.main
 
 ## 8장. virtual machine - program control
 
 ## 9장. compiler I - syntax analysis
+
+![](images/2023-04-21-22-02-24.png)
+
+1. Main.jack + Point.jack (source code)
+2. Main.vm + Point.vm (VM code, byte code for java)
+3. Points.asm (assembly code)
+4. Points.hack (binary machine code)
+5. cpu loads Points.hack and execute
+
+
+
 ## 10장. compiler II - code generation
 
 ## 11장. operating system
