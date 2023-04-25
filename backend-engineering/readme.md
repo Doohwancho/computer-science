@@ -19,7 +19,7 @@ Todos
 
 
 a-1. request response :white_check_mark:\
-a-2. synchronous vs asynchronous workloads\
+a-2. synchronous vs asynchronous workloads :white_check_mark:\
 a-3. push\
 a-4. polling\
 a-5. long polling\
