@@ -13,9 +13,10 @@ Fields
 A. Computer Architecture\
 B. Operating System\
 C. Network\
-D. assembly\
+D. Assembly\
 E. Compiler\
 F. C\
-Z. explore
+G. Backend Engineering\
+Z. Explore!
 
-x. Verilog
+x. Verilog!
