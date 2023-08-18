@@ -19,6 +19,8 @@ b. thread
 > b-ㄱ. concurrency\
 > b-ㄴ. multi thread
 
+c. file
+
 d. pintos
 
 
@@ -45,5 +47,10 @@ b-ㄱ. concurrency\
 b-ㄱ-가1. [mutex](https://cumulativebackendstack.blogspot.com/2021/04/operating-system-threading-with-cc.html) :white_check_mark:\
 b-ㄴ. multi thread\
 b-ㄴ-가-1. [multi-thread](https://cumulativebackendstack.blogspot.com/2021/04/operating-system-threading-with-cc.html) :white_check_mark:
+
+c-1. simple file io :white_check_mark:\
+c-2. process간 파일로 통신 :white_check_mark:\
+c-3. pipe를 이용한 파일로 통신 :white_check_mark:\
+c-4. client-server 통신 :white_check_mark:
 
 d-1. install pintos :white_check_mark:
