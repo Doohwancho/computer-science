@@ -38,7 +38,8 @@ d-5. fork() :white_check_mark:\
 d-6. multiple fork() :white_check_mark:\
 d-7. writing malloc() from scratch :white_check_mark:
 
-e-1. linkedlist 기반 주소록 :white_check_mark:
+e-1. level1 - linkedlist 기반 주소록 :white_check_mark:\
+e-2. level2 - advanced linkedlist 기반 주소록 :white_check_mark:
 
 
 ---\
@@ -51,4 +52,5 @@ d-5. [fork()](https://www.crocus.co.kr/451) \
 d-6. [multiple fork()](https://www.crocus.co.kr/452) \
 d-7. [writing my own malloc in c](https://www.youtube.com/watch?v=sZ8GJ1TiMdk&ab_channel=TsodingDaily)
 
-e-1. [linkedlist 기반 주소록](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lsszz210&logNo=220282477592)
+e-1. [linkedlist 기반 주소록](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lsszz210&logNo=220282477592) \
+e-2. advanced linkedlist by 널널한 개발자
