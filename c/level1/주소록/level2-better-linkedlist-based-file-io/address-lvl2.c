@@ -187,6 +187,36 @@ int SaveList(char *pszFileName)
     return 1;
 }
 
+int Remove()
+{
+    //1. fread()? 로인가? fgets()? 인가? 이름 입력받기
+    char szInputName[32] = { 0 };
+
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(USERDATA), stdin);
+    //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다.
+
+
+    //2. g_Head를 돌면서, szName이 같은지 확인
+    USERDATA *pPrev = &g_Head;
+    USERDATA *pDelete = NULL;
+
+    while(pPrev->pNext != NULL) //맨 마지막 node면 못지우잖아?
+    {
+        pDelete = pPrev->pNext;
+        if(strcmp(pDelete->szName, szInputName) == 0)
+        {
+            pPrev->pNext = pDelete->pNext;
+            free(pDelete);
+            return 1;
+        }
+        pPrev = pPrev->pNext;
+    }
+
+    return 0;
+}
+
 int main()
 {
     int nMenu = 0;
@@ -201,6 +231,9 @@ int main()
                 break;
             case 3:
                 PrintAll();
+                break;
+            case 4:
+                Remove();
                 break;
         }
     }
