@@ -57,6 +57,8 @@ int AddNewNode(char *pszName, char *pszPhone)
 
     return 1;
 }
+
+
 int LoadList(char *pszFileName)
 {
     //1. open file with filename
@@ -81,26 +83,6 @@ int LoadList(char *pszFileName)
     fclose(fp);
 
     return 0;
-}
-
-
-void ReleaseList()
-{
-    //1. g_Head->pNext && pDelete 만듬
-    USERDATA *pTmp = g_Head.pNext;
-    USERDATA *pDelete = NULL;
-
-    //2. g_Head->pNext를 while로 돌면서 free(pDelete)
-    while(pTmp != NULL)
-    {
-        pDelete = pTmp;
-        pTmp = pTmp->pNext;
-
-        free(pDelete);
-    }
-
-    //3. free(g_Head)
-    memset(&g_Head, 0, sizeof(USERDATA));
 }
 
 int PrintUI()
@@ -137,6 +119,33 @@ int Add()
     return 1;
 }
 
+int Search()
+{
+    char szInputName[32];
+    USERDATA *pNode = g_Head.pNext;
+    USERDATA *pTarget = NULL;
+
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(szInputName), stdin);
+
+    while(pNode != NULL)
+    {
+        if(strcmp(pNode->szName, szInputName) == 0)
+        {
+            pTarget = pNode;
+        }
+        pNode = pNode->pNext;
+    }
+
+    if(pTarget == NULL)
+        puts("ERROR: 데이터를 찾을 수 없습니다.");
+
+    printf("[%p] %s\t%s [%p]\n", pTarget, pTarget->szName, pTarget->szPhone, pTarget->pNext);
+    flush_stdin();
+}
+
+
 void PrintAll()
 {
     //get g_Head
@@ -155,6 +164,39 @@ void PrintAll()
     getchar();
     flush_stdin();
 }
+
+
+int Remove()
+{
+    //1. fread()? 로인가? fgets()? 인가? 이름 입력받기
+    char szInputName[32] = { 0 };
+
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(USERDATA), stdin);
+    //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다.
+
+
+    //2. g_Head를 돌면서, szName이 같은지 확인
+    USERDATA *pPrev = &g_Head;
+    USERDATA *pDelete = NULL;
+
+    while(pPrev->pNext != NULL) //맨 마지막 node면 못지우잖아?
+    {
+        pDelete = pPrev->pNext;
+        if(strcmp(pDelete->szName, szInputName) == 0)
+        {
+            pPrev->pNext = pDelete->pNext;
+            free(pDelete);
+            return 1;
+        }
+        pPrev = pPrev->pNext;
+    }
+
+    return 0;
+}
+
+
 
 //save g_Head into FILE
 int SaveList(char *pszFileName)
@@ -187,35 +229,27 @@ int SaveList(char *pszFileName)
     return 1;
 }
 
-int Remove()
+
+void ReleaseList()
 {
-    //1. fread()? 로인가? fgets()? 인가? 이름 입력받기
-    char szInputName[32] = { 0 };
-
-    printf("Input name: ");
-    flush_stdin();
-    fgets(szInputName, sizeof(USERDATA), stdin);
-    //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다.
-
-
-    //2. g_Head를 돌면서, szName이 같은지 확인
-    USERDATA *pPrev = &g_Head;
+    //1. g_Head->pNext && pDelete 만듬
+    USERDATA *pTmp = g_Head.pNext;
     USERDATA *pDelete = NULL;
 
-    while(pPrev->pNext != NULL) //맨 마지막 node면 못지우잖아?
+    //2. g_Head->pNext를 while로 돌면서 free(pDelete)
+    while(pTmp != NULL)
     {
-        pDelete = pPrev->pNext;
-        if(strcmp(pDelete->szName, szInputName) == 0)
-        {
-            pPrev->pNext = pDelete->pNext;
-            free(pDelete);
-            return 1;
-        }
-        pPrev = pPrev->pNext;
+        pDelete = pTmp;
+        pTmp = pTmp->pNext;
+
+        free(pDelete);
     }
 
-    return 0;
+    //3. free(g_Head)
+    memset(&g_Head, 0, sizeof(USERDATA));
 }
+
+
 
 int main()
 {
@@ -228,6 +262,9 @@ int main()
         switch(nMenu) {
             case 1:
                 Add();
+                break;
+            case 2:
+                Search();
                 break;
             case 3:
                 PrintAll();
