@@ -38,8 +38,10 @@ d-5. fork() :white_check_mark:\
 d-6. multiple fork() :white_check_mark:\
 d-7. writing malloc() from scratch :white_check_mark:
 
-e-1. level1 - linkedlist 기반 주소록 :white_check_mark:\
-e-2. level2 - advanced linkedlist 기반 주소록 :white_check_mark:
+e-ㄱ. 주소록\
+e-ㄱ-1. level1 - linkedlist 기반 주소록 :white_check_mark:\
+e-ㄱ-2. level2 - advanced linkedlist 기반 주소록 :white_check_mark:\
+e-ㄱ-3. level3 - bst 기반 주소록 :white_check_mark:
 
 
 ---\
