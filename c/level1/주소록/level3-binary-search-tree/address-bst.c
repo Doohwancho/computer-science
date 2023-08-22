@@ -4,17 +4,6 @@
 
 #define DATA_FILE_NAME "Address.dat"
 
-
-void flush_stdin();
-int LoadList();
-int PrintUI();
-int Add();
-//int AddNewNode(USERDATA**, char*, char*);
-int Search();
-void PrintAll();
-int Remove();
-/* void ReleasePostOrder(struct _USERDATA*); */
-
 typedef struct _USERDATA
 {
     char szName[32];
@@ -92,6 +81,61 @@ USERDATA* SearchByName(USERDATA *pNode, const char *szName)
     else
         return SearchByName(pNode->pRight, szName);
 }
+
+USERDATA *FindMinNode(USERDATA *pNode)
+{
+    if(pNode == NULL)
+        return NULL;
+
+    while(pNode->pLeft != NULL)
+        pNode = pNode->pLeft;
+
+    return pNode;
+}
+
+USERDATA *DeleteNodeByName(USERDATA *pNode, char *szInputName)
+{
+    if(pNode == NULL)
+        return NULL;
+
+    int compareResult = strcmp(szInputName, pNode->szName);
+
+    if(compareResult < 0)
+    {
+        pNode->pLeft = DeleteNodeByName(pNode->pLeft, szInputName);
+    }
+    else if(compareResult > 0)
+    {
+        pNode->pRight= DeleteNodeByName(pNode->pRight, szInputName);
+
+    }
+    else if(compareResult == 0)
+    {
+        //1. right child만 있는 경우
+        if(pNode->pLeft == NULL)
+        {
+            USERDATA *temp = pNode->pRight;
+            free(pNode);
+            return temp;
+        }
+        //2. left child만 있는 경우
+        else if(pNode->pRight == NULL)
+        {
+            USERDATA *temp = pNode->pLeft;
+            free(pNode);
+            return temp;
+        }
+
+        //3. left child, right child 둘 다 있는 경우
+        USERDATA *minRightSubTree = FindMinNode(pNode->pRight); //right child에 제일 작은놈 찾고
+        strcpy(pNode->szName, minRightSubTree->szName); //현재 노드에 값을 덮어씌운 뒤,
+        strcpy(pNode->szPhone, minRightSubTree->szPhone);
+        pNode->pRight = DeleteNodeByName(pNode->pRight, minRightSubTree->szName); //recursive로 right child에 제일 작은놈으로 가서, 해당 노드의 child가 NULL이면, 오른 child | NULL반환한걸 부모노드가 받고 끝남.
+    }
+
+    return pNode;
+}
+
 
 int SaveInOrder(USERDATA *pNode, FILE *fp)
 {
@@ -203,35 +247,26 @@ void PrintAll()
 }
 
 
-/* int Remove() */
-/* { */
-/*     //1. fread()? 로인가? fgets()? 인가? 이름 입력받기 */
-/*     char szInputName[32] = { 0 }; */
+int Remove()
+{
+    char szInputName[32] = { 0 };
 
-/*     printf("Input name: "); */
-/*     flush_stdin(); */
-/*     fgets(szInputName, sizeof(USERDATA), stdin); */
-/*     //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다. */
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(USERDATA), stdin);
+    //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다.
+
+    USERDATA *pDelete = DeleteNodeByName(g_Head, szInputName);
+
+    if(pDelete == NULL)
+    {
+        printf("입력한 name이 데이터베이스에 존재하지 않습니다.\n");
+        return 0;
+    }
 
 
-/*     //2. g_Head를 돌면서, szName이 같은지 확인 */
-/*     USERDATA *pPrev = &g_Head; */
-/*     USERDATA *pDelete = NULL; */
-
-/*     while(pPrev->pNext != NULL) //맨 마지막 node면 못지우잖아? */
-/*     { */
-/*         pDelete = pPrev->pNext; */
-/*         if(strcmp(pDelete->szName, szInputName) == 0) */
-/*         { */
-/*             pPrev->pNext = pDelete->pNext; */
-/*             free(pDelete); */
-/*             return 1; */
-/*         } */
-/*         pPrev = pPrev->pNext; */
-/*     } */
-
-/*     return 0; */
-/* } */
+    return 1;
+}
 
 
 
@@ -281,9 +316,9 @@ int main()
             case 3:
                 PrintAll();
                 break;
-            /* case 4: */
-            /*     Remove(); */
-            /*     break; */
+            case 4:
+                Remove();
+                break;
         }
     }
 
