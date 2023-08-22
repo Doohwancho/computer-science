@@ -78,6 +78,21 @@ int AddNewNode(USERDATA **ppNode, char *pszName, char *pszPhone)
     return 1;
 }
 
+USERDATA* SearchByName(USERDATA *pNode, const char *szName)
+{
+    if(pNode == NULL)
+        return NULL;
+
+    int compareResult = strcmp(szName, pNode->szName);
+
+    if(compareResult == 0)
+        return pNode;
+    else if(compareResult < 0)
+        return SearchByName(pNode->pLeft, szName);
+    else
+        return SearchByName(pNode->pRight, szName);
+}
+
 int SaveInOrder(USERDATA *pNode, FILE *fp)
 {
     if(pNode != NULL)
@@ -163,31 +178,21 @@ int Add()
     return 1;
 }
 
-/* int Search() */
-/* { */
-/*     char szInputName[32]; */
-/*     USERDATA *pNode = g_Head.pNext; */
-/*     USERDATA *pTarget = NULL; */
+int Search()
+{
+    char szInputName[32];
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(szInputName), stdin);
 
-/*     printf("Input name: "); */
-/*     flush_stdin(); */
-/*     fgets(szInputName, sizeof(szInputName), stdin); */
+    USERDATA *pTarget = SearchByName(g_Head, szInputName);
 
-/*     while(pNode != NULL) */
-/*     { */
-/*         if(strcmp(pNode->szName, szInputName) == 0) */
-/*         { */
-/*             pTarget = pNode; */
-/*         } */
-/*         pNode = pNode->pNext; */
-/*     } */
+    if(pTarget == NULL)
+        puts("ERROR: 데이터를 찾을 수 없습니다.");
 
-/*     if(pTarget == NULL) */
-/*         puts("ERROR: 데이터를 찾을 수 없습니다."); */
-
-/*     printf("[%p] %s\t%s [%p]\n", pTarget, pTarget->szName, pTarget->szPhone, pTarget->pNext); */
-/*     flush_stdin(); */
-/* } */
+    printf("[%p] %s\t%s\n", pTarget, pTarget->szName, pTarget->szPhone);
+    flush_stdin();
+}
 
 
 void PrintAll()
@@ -270,9 +275,9 @@ int main()
             case 1:
                 Add();
                 break;
-            /* case 2: */
-            /*     Search(); */
-            /*     break; */
+            case 2:
+                Search();
+                break;
             case 3:
                 PrintAll();
                 break;
