@@ -78,6 +78,19 @@ int AddNewNode(USERDATA **ppNode, char *pszName, char *pszPhone)
     return 1;
 }
 
+int SaveInOrder(USERDATA *pNode, FILE *fp)
+{
+    if(pNode != NULL)
+    {
+        SaveInOrder(pNode->pLeft, fp);
+        if(fwrite(pNode, sizeof(USERDATA), 1, fp) != 1)
+            printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pNode->szName);
+        SaveInOrder(pNode->pRight, fp);
+    }
+
+    return 1;
+}
+
 
 void ReleasePostOrder(USERDATA *pNode)
 {
@@ -182,22 +195,6 @@ void PrintAll()
     InOrderTraversal(g_Head);
     getchar();
     flush_stdin();
-
-/*     //get g_Head */
-/*     USERDATA *pHead = g_Head.pNext; //Q. 맨 첫 노드엔 안넣는 이유는? */
-
-/*     flush_stdin(); */
-
-/*     //while loop 돌면서 print */
-/*     while(pHead != NULL) */
-/*     { */
-/*         printf("[%p] %s\t%s [%p]\n", pHead, pHead->szName, pHead->szPhone, pHead->pNext); */
-/*         pHead = pHead->pNext; */
-/*     } */
-
-/*     //clear buffer */
-/*     getchar(); */
-/*     flush_stdin(); */
 }
 
 
@@ -233,36 +230,33 @@ void PrintAll()
 
 
 
-/* //save g_Head into FILE */
-/* int SaveList(char *pszFileName) */
-/* { */
-/*     //1. open file */
-/*     FILE *fp = fopen(pszFileName, "wb"); */
-/*     USERDATA *pHead = g_Head.pNext; */
+//save g_Head into FILE
+int Save(char *pszFileName)
+{
+    //1. open file
+    FILE *fp = fopen(pszFileName, "wb");
+    USERDATA *pHead = g_Head;
 
-/*     //2. null check for open file */
-/*     if(fp == NULL) */
-/*     { */
-/*         puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다."); //puts() 함수는 지정된 string을 표준 출력 스트림 stdout에 씁니다. 또한 새 행 문자를 출력에도 추가합니다. 끝 널 문자가 작성되지 않습니다. */
-/*         //getchar(); */
-/*         flush_stdin(); */
-/*         return 0; */
-/*     } */
+    //2. null check for open file
+    if(fp == NULL)
+    {
+        puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다."); //puts() 함수는 지정된 string을 표준 출력 스트림 stdout에 씁니다. 또한 새 행 문자를 출력에도 추가합니다. 끝 널 문자가 작성되지 않습니다.
+        //getchar();
+        flush_stdin();
+        return 0;
+    }
 
-/*     //3. insert g_Head into file */
-/*     while(pHead != NULL) */
-/*     { */
-/*         if(fwrite(pHead, sizeof(USERDATA), 1, fp) != 1) */
-/*             printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pHead->szName); */
+    //3. insert g_Head into file
+    if(!SaveInOrder(g_Head, fp))
+    {
+        fclose(fp);
+        return 0;
+    }
 
-/*         pHead = pHead->pNext; */
-/*     } */
+    fclose(fp);
 
-/*     //4. close file */
-/*     fclose(fp); */
-
-/*     return 1; */
-/* } */
+    return 1;
+}
 
 int main()
 {
@@ -288,7 +282,7 @@ int main()
         }
     }
 
-    /* SaveList(DATA_FILE_NAME); */
+    Save(DATA_FILE_NAME);
     ReleasePostOrder(g_Head);
 
     return 0;
