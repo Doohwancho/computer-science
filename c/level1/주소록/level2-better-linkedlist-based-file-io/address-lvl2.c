@@ -132,22 +132,7 @@ int Add()
     printf("Input phone number: ");
     fgets(szPhone, sizeof(szPhone), stdin);
 
-
-    //2. malloc으로 메모리 공간 확보한다
-    pNewNode = (USERDATA*)malloc(sizeof(USERDATA));
-
-    //3. memset으로 zero-initialization
-    memset(pNewNode, 0, sizeof(USERDATA)); //Q. &pNewNode가 아니었다?!
-
-
-    //4. sprintf()로 값을 넣는다
-    sprintf(pNewNode->szName, "%s", szName);
-    sprintf(pNewNode->szPhone, "%s", szPhone);
-
-
-    //5. g_Head->pNext = pNewNode
-    pNewNode->pNext = g_Head.pNext;
-    g_Head.pNext = pNewNode;
+    AddNewNode(szName, szPhone);
 
     return 1;
 }
@@ -171,6 +156,37 @@ void PrintAll()
     flush_stdin();
 }
 
+//save g_Head into FILE
+int SaveList(char *pszFileName)
+{
+    //1. open file
+    FILE *fp = fopen(pszFileName, "wb");
+    USERDATA *pHead = g_Head.pNext;
+
+    //2. null check for open file
+    if(fp == NULL)
+    {
+        puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다."); //puts() 함수는 지정된 string을 표준 출력 스트림 stdout에 씁니다. 또한 새 행 문자를 출력에도 추가합니다. 끝 널 문자가 작성되지 않습니다.
+        //getchar();
+        flush_stdin();
+        return 0;
+    }
+
+    //3. insert g_Head into file
+    while(pHead != NULL)
+    {
+        if(fwrite(pHead, sizeof(USERDATA), 1, fp) != 1)
+            printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pHead->szName);
+
+        pHead = pHead->pNext;
+    }
+
+    //4. close file
+    fclose(fp);
+
+    return 1;
+}
+
 int main()
 {
     int nMenu = 0;
@@ -189,7 +205,7 @@ int main()
         }
     }
 
-    //SaveList(DATA_FILE_NAME);
+    SaveList(DATA_FILE_NAME);
     ReleaseList();
 
     return 0;
