@@ -114,15 +114,15 @@ USERDATA *rightRotate(USERDATA *y)
 	\
      T2
 */
-USERDATA *leftRotate(USERDATA *x)
+USERDATA *leftRotate(USERDATA **x)
 {
-    USERDATA *y = x->pRight;
+    USERDATA *y = (*x)->pRight;
     USERDATA *T2 = y->pLeft;
 
-    y->pLeft= x;
-    x->pRight= T2;
+    y->pLeft= *x;
+    (*x)->pRight= T2;
 
-    x->height = max(height(x->pLeft), height(x->pRight)) + 1;
+    (*x)->height = max(height((*x)->pLeft), height((*x)->pRight)) + 1;
     y->height = max(height(y->pLeft), height(y->pRight)) + 1;
 
     return y;
@@ -148,6 +148,7 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     else
     {
         printf("Duplicate keys are not allowed\n");
+        getchar();
         return *ppNode; // Duplicate keys are not allowed
     }
 
@@ -162,6 +163,7 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     if(balance > 1 && (strcmp(pszName, (*ppNode)->pLeft->szName) < 0))
     {
         printf("Left Left Case\n");
+        getchar();
         return rightRotate(*ppNode);
     }
 
@@ -169,7 +171,8 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     if (balance < -1 && (strcmp(pszName, (*ppNode)->pRight->szName) > 0))
     {
         printf("Right Right Case\n");
-        return leftRotate(*ppNode);
+        getchar();
+        return leftRotate(&(*ppNode));
     }
 
 
@@ -177,7 +180,8 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     if (balance > 1 && (strcmp(pszName , (*ppNode)->pLeft->szName) > 0))
     {
         printf("Left Right Case\n");
-        (*ppNode)->pLeft = leftRotate((*ppNode)->pLeft);
+        getchar();
+        (*ppNode)->pLeft = leftRotate(&((*ppNode)->pLeft));
         return rightRotate(*ppNode);
     }
 
@@ -185,8 +189,9 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     if (balance < -1 && (strcmp(pszName, (*ppNode)->pRight->szName)) < 0)
     {
         printf("Right Left Case\n");
+        getchar();
         (*ppNode)->pRight = rightRotate((*ppNode)->pRight);
-        return leftRotate(*ppNode);
+        return leftRotate(&(*ppNode));
     }
 
     return *ppNode;
@@ -269,19 +274,19 @@ USERDATA *DeleteNodeByName(USERDATA *pNode, char *szInputName)
 
     // Left Right Case
     if (balance > 1 && getBalance(pNode->pLeft) < 0) {
-        pNode->pLeft = leftRotate(pNode->pLeft);
+        pNode->pLeft = leftRotate(&(pNode->pLeft));
         return rightRotate(pNode);
     }
 
     // Right Right Case
     if (balance < -1 && getBalance(pNode->pRight) <= 0) {
-        return leftRotate(pNode);
+        return leftRotate(&pNode);
     }
 
     // Right Left Case
     if (balance < -1 && getBalance(pNode->pRight) > 0) {
         pNode->pRight = rightRotate(pNode->pRight);
-        return leftRotate(pNode);
+        return leftRotate(&pNode);
     }
 
     return pNode;
@@ -332,7 +337,7 @@ int LoadList(char *pszFileName)
     //fread() - size_t fread(void *buffer, size_t size, size_t count, FILE *stream);
     //fread() 함수는 입력 stream에서 size 길이의 count 항목까지 읽고, 지정된 buffer에 저장합니다. 파일의 위치는 읽은 바이트의 수만큼 증가합니다.
     while(fread(&user, sizeof(USERDATA), 1, fp))
-        insert(&g_Head, user.szName, user.szPhone);
+        g_Head = insert(&g_Head, user.szName, user.szPhone);
 
 
     //5. missed - free *fp
@@ -370,7 +375,7 @@ int Add()
     printf("Input phone number: ");
     fgets(szPhone, sizeof(szPhone), stdin);
 
-    insert(&g_Head, szName, szPhone);
+    g_Head = insert(&g_Head, szName, szPhone);
 
     return 1;
 }
