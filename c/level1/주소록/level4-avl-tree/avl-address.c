@@ -136,6 +136,9 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
         return *ppNode;
     }
 
+    //strcmp("1","2") -> -1
+    //strcmp("1","1") -> 0
+    //strcmp("2","1") -> 1
     int compareResult = strcmp(pszName, (*ppNode)->szName);
 
     if(compareResult < 0)
@@ -157,16 +160,23 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
 
     // Left Left Case
     if(balance > 1 && (strcmp(pszName, (*ppNode)->pLeft->szName) < 0))
+    {
+        printf("Left Left Case\n");
         return rightRotate(*ppNode);
+    }
 
     // Right Right Case
     if (balance < -1 && (strcmp(pszName, (*ppNode)->pRight->szName) > 0))
+    {
+        printf("Right Right Case\n");
         return leftRotate(*ppNode);
+    }
 
 
     // Left Right Case
     if (balance > 1 && (strcmp(pszName , (*ppNode)->pLeft->szName) > 0))
     {
+        printf("Left Right Case\n");
         (*ppNode)->pLeft = leftRotate((*ppNode)->pLeft);
         return rightRotate(*ppNode);
     }
@@ -174,6 +184,7 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     // Right Left Case
     if (balance < -1 && (strcmp(pszName, (*ppNode)->pRight->szName)) < 0)
     {
+        printf("Right Left Case\n");
         (*ppNode)->pRight = rightRotate((*ppNode)->pRight);
         return leftRotate(*ppNode);
     }
@@ -282,7 +293,9 @@ int SaveInOrder(USERDATA *pNode, FILE *fp)
     if(pNode != NULL)
     {
         SaveInOrder(pNode->pLeft, fp);
-        if(fwrite(pNode, sizeof(USERDATA), 1, fp) != 1)
+
+        USERDATA *saveNode = newNode(pNode->szName, pNode->szPhone); //height는 저장하지 않는다.
+        if(fwrite(saveNode, sizeof(USERDATA), 1, fp) != 1)
             printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pNode->szName);
         SaveInOrder(pNode->pRight, fp);
     }
