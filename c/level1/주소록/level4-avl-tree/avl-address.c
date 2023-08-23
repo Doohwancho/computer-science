@@ -181,126 +181,114 @@ USERDATA *insert(USERDATA **ppNode, char *pszName, char *pszPhone)
     return *ppNode;
 }
 
+USERDATA* SearchByName(USERDATA *pNode, const char *szName)
+{
+    if(pNode == NULL)
+        return NULL;
 
-/* int AddNewNode(USERDATA **ppNode, char *pszName, char *pszPhone) */
-/* { */
-/*     if(*ppNode == NULL) */
-/*     { */
-/*         *ppNode = (USERDATA*)malloc(sizeof(USERDATA)); */
-/*         if(*ppNode == NULL) */
-/*         { */
-/*             printf("Memory Allocation Failed.\n"); */
-/*             return 0; */
-/*         } */
-/*         memset(*ppNode, 0, sizeof(USERDATA)); */
-/*         sprintf((*ppNode)->szName, "%s", pszName); */
-/*         sprintf((*ppNode)->szPhone, "%s", pszPhone); */
-/*         (*ppNode)->pLeft = NULL; */
-/*         (*ppNode)->pRight = NULL; */
-/*         return 1; */
-/*     } */
+    int compareResult = strcmp(szName, pNode->szName);
 
-/*     int compareResult = strcmp(pszName, (*ppNode)->szName); */
+    if(compareResult == 0)
+        return pNode;
+    else if(compareResult < 0)
+        return SearchByName(pNode->pLeft, szName);
+    else
+        return SearchByName(pNode->pRight, szName);
+}
 
-/*     if(compareResult < 0) */
-/*     { */
-/*         return AddNewNode(&(*ppNode)->pLeft, pszName, pszPhone); */
-/*     } */
-/*     else if(compareResult > 0) */
-/*     { */
-/*         return AddNewNode(&(*ppNode)->pRight, pszName, pszPhone); */
-/*     } */
-/*     else */
-/*     { */
-/*         printf("error! Duplicate Name!\n"); */
-/*         return 0; */
-/*     } */
+USERDATA *FindMinNode(USERDATA *pNode)
+{
+    if(pNode == NULL)
+        return NULL;
 
-/*     return 1; */
-/* } */
+    while(pNode->pLeft != NULL)
+        pNode = pNode->pLeft;
 
-/* USERDATA* SearchByName(USERDATA *pNode, const char *szName) */
-/* { */
-/*     if(pNode == NULL) */
-/*         return NULL; */
+    return pNode;
+}
 
-/*     int compareResult = strcmp(szName, pNode->szName); */
+USERDATA *DeleteNodeByName(USERDATA *pNode, char *szInputName)
+{
+    if(pNode == NULL)
+        return NULL;
 
-/*     if(compareResult == 0) */
-/*         return pNode; */
-/*     else if(compareResult < 0) */
-/*         return SearchByName(pNode->pLeft, szName); */
-/*     else */
-/*         return SearchByName(pNode->pRight, szName); */
-/* } */
+    int compareResult = strcmp(szInputName, pNode->szName);
 
-/* USERDATA *FindMinNode(USERDATA *pNode) */
-/* { */
-/*     if(pNode == NULL) */
-/*         return NULL; */
+    if(compareResult < 0)
+    {
+        pNode->pLeft = DeleteNodeByName(pNode->pLeft, szInputName);
+    }
+    else if(compareResult > 0)
+    {
+        pNode->pRight= DeleteNodeByName(pNode->pRight, szInputName);
 
-/*     while(pNode->pLeft != NULL) */
-/*         pNode = pNode->pLeft; */
+    }
+    else if(compareResult == 0)
+    {
+        //1. right child만 있는 경우
+        if(pNode->pLeft == NULL)
+        {
+            USERDATA *temp = pNode->pRight;
+            free(pNode);
+            return temp;
+        }
+        //2. left child만 있는 경우
+        else if(pNode->pRight == NULL)
+        {
+            USERDATA *temp = pNode->pLeft;
+            free(pNode);
+            return temp;
+        }
 
-/*     return pNode; */
-/* } */
+        //3. left child, right child 둘 다 있는 경우
+        USERDATA *minRightSubTree = FindMinNode(pNode->pRight); //right child에 제일 작은놈 찾고
+        strcpy(pNode->szName, minRightSubTree->szName); //현재 노드에 값을 덮어씌운 뒤,
+        strcpy(pNode->szPhone, minRightSubTree->szPhone);
+        pNode->pRight = DeleteNodeByName(pNode->pRight, minRightSubTree->szName); //recursive로 right child에 제일 작은놈으로 가서, 해당 노드의 child가 NULL이면, 오른 child | NULL반환한걸 부모노드가 받고 끝남.
+    }
 
-/* USERDATA *DeleteNodeByName(USERDATA *pNode, char *szInputName) */
-/* { */
-/*     if(pNode == NULL) */
-/*         return NULL; */
+    pNode->height = 1 + max(height(pNode->pLeft), height(pNode->pRight));
 
-/*     int compareResult = strcmp(szInputName, pNode->szName); */
+    int balance = getBalance(pNode);
 
-/*     if(compareResult < 0) */
-/*     { */
-/*         pNode->pLeft = DeleteNodeByName(pNode->pLeft, szInputName); */
-/*     } */
-/*     else if(compareResult > 0) */
-/*     { */
-/*         pNode->pRight= DeleteNodeByName(pNode->pRight, szInputName); */
+    // Left Left Case
+    if (balance > 1 && getBalance(pNode->pLeft) >= 0) {
+        return rightRotate(pNode);
+    }
 
-/*     } */
-/*     else if(compareResult == 0) */
-/*     { */
-/*         //1. right child만 있는 경우 */
-/*         if(pNode->pLeft == NULL) */
-/*         { */
-/*             USERDATA *temp = pNode->pRight; */
-/*             free(pNode); */
-/*             return temp; */
-/*         } */
-/*         //2. left child만 있는 경우 */
-/*         else if(pNode->pRight == NULL) */
-/*         { */
-/*             USERDATA *temp = pNode->pLeft; */
-/*             free(pNode); */
-/*             return temp; */
-/*         } */
+    // Left Right Case
+    if (balance > 1 && getBalance(pNode->pLeft) < 0) {
+        pNode->pLeft = leftRotate(pNode->pLeft);
+        return rightRotate(pNode);
+    }
 
-/*         //3. left child, right child 둘 다 있는 경우 */
-/*         USERDATA *minRightSubTree = FindMinNode(pNode->pRight); //right child에 제일 작은놈 찾고 */
-/*         strcpy(pNode->szName, minRightSubTree->szName); //현재 노드에 값을 덮어씌운 뒤, */
-/*         strcpy(pNode->szPhone, minRightSubTree->szPhone); */
-/*         pNode->pRight = DeleteNodeByName(pNode->pRight, minRightSubTree->szName); //recursive로 right child에 제일 작은놈으로 가서, 해당 노드의 child가 NULL이면, 오른 child | NULL반환한걸 부모노드가 받고 끝남. */
-/*     } */
+    // Right Right Case
+    if (balance < -1 && getBalance(pNode->pRight) <= 0) {
+        return leftRotate(pNode);
+    }
 
-/*     return pNode; */
-/* } */
+    // Right Left Case
+    if (balance < -1 && getBalance(pNode->pRight) > 0) {
+        pNode->pRight = rightRotate(pNode->pRight);
+        return leftRotate(pNode);
+    }
+
+    return pNode;
+}
 
 
-/* int SaveInOrder(USERDATA *pNode, FILE *fp) */
-/* { */
-/*     if(pNode != NULL) */
-/*     { */
-/*         SaveInOrder(pNode->pLeft, fp); */
-/*         if(fwrite(pNode, sizeof(USERDATA), 1, fp) != 1) */
-/*             printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pNode->szName); */
-/*         SaveInOrder(pNode->pRight, fp); */
-/*     } */
+int SaveInOrder(USERDATA *pNode, FILE *fp)
+{
+    if(pNode != NULL)
+    {
+        SaveInOrder(pNode->pLeft, fp);
+        if(fwrite(pNode, sizeof(USERDATA), 1, fp) != 1)
+            printf("ERROR: %s에 대한 정보를 저장하는데 실패했습니다.\n", pNode->szName);
+        SaveInOrder(pNode->pRight, fp);
+    }
 
-/*     return 1; */
-/* } */
+    return 1;
+}
 
 
 void ReleasePostOrder(USERDATA *pNode)
@@ -374,21 +362,21 @@ int Add()
     return 1;
 }
 
-/* int Search() */
-/* { */
-/*     char szInputName[32]; */
-/*     printf("Input name: "); */
-/*     flush_stdin(); */
-/*     fgets(szInputName, sizeof(szInputName), stdin); */
+int Search()
+{
+    char szInputName[32];
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(szInputName), stdin);
 
-/*     USERDATA *pTarget = SearchByName(g_Head, szInputName); */
+    USERDATA *pTarget = SearchByName(g_Head, szInputName);
 
-/*     if(pTarget == NULL) */
-/*         puts("ERROR: 데이터를 찾을 수 없습니다."); */
+    if(pTarget == NULL)
+        puts("ERROR: 데이터를 찾을 수 없습니다.");
 
-/*     printf("[%p] %s\t%s\n", pTarget, pTarget->szName, pTarget->szPhone); */
-/*     flush_stdin(); */
-/* } */
+    printf("[%p] %s\t%s\n", pTarget, pTarget->szName, pTarget->szPhone);
+    flush_stdin();
+}
 
 
 void PrintAll()
@@ -399,56 +387,56 @@ void PrintAll()
 }
 
 
-/* int Remove() */
-/* { */
-/*     char szInputName[32] = { 0 }; */
+int Remove()
+{
+    char szInputName[32] = { 0 };
 
-/*     printf("Input name: "); */
-/*     flush_stdin(); */
-/*     fgets(szInputName, sizeof(USERDATA), stdin); */
-/*     //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다. */
+    printf("Input name: ");
+    flush_stdin();
+    fgets(szInputName, sizeof(USERDATA), stdin);
+    //fgets() 함수는 현재 stream 위치에서 어느 것이 먼저 오건 첫 번째 줄 바꾸기 문자(\n)까지, 스트림의 끝까지 또는 읽은 문자 수가 n-1과 같을 때까지 문자를 읽습니다. fgets() 함수는 결과를 string에 저장하고 스트링 끝에 널(null) 문자(\0)를 추가합니다. string은 줄 바꾸기 문자를 포함합니다(읽은 경우). n이 1이면 string이 비어 있습니다.
 
-/*     USERDATA *pDelete = DeleteNodeByName(g_Head, szInputName); */
+    USERDATA *pDelete = DeleteNodeByName(g_Head, szInputName);
 
-/*     if(pDelete == NULL) */
-/*     { */
-/*         printf("입력한 name이 데이터베이스에 존재하지 않습니다.\n"); */
-/*         return 0; */
-/*     } */
-
-
-/*     return 1; */
-/* } */
+    if(pDelete == NULL)
+    {
+        printf("입력한 name이 데이터베이스에 존재하지 않습니다.\n");
+        return 0;
+    }
 
 
+    return 1;
+}
 
-/* //save g_Head into FILE */
-/* int Save(char *pszFileName) */
-/* { */
-/*     //1. open file */
-/*     FILE *fp = fopen(pszFileName, "wb"); */
-/*     USERDATA *pHead = g_Head; */
 
-/*     //2. null check for open file */
-/*     if(fp == NULL) */
-/*     { */
-/*         puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다."); //puts() 함수는 지정된 string을 표준 출력 스트림 stdout에 씁니다. 또한 새 행 문자를 출력에도 추가합니다. 끝 널 문자가 작성되지 않습니다. */
-/*         //getchar(); */
-/*         flush_stdin(); */
-/*         return 0; */
-/*     } */
 
-/*     //3. insert g_Head into file */
-/*     if(!SaveInOrder(g_Head, fp)) */
-/*     { */
-/*         fclose(fp); */
-/*         return 0; */
-/*     } */
+//save g_Head into FILE
+int Save(char *pszFileName)
+{
+    //1. open file
+    FILE *fp = fopen(pszFileName, "wb");
+    USERDATA *pHead = g_Head;
 
-/*     fclose(fp); */
+    //2. null check for open file
+    if(fp == NULL)
+    {
+        puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다."); //puts() 함수는 지정된 string을 표준 출력 스트림 stdout에 씁니다. 또한 새 행 문자를 출력에도 추가합니다. 끝 널 문자가 작성되지 않습니다.
+        //getchar();
+        flush_stdin();
+        return 0;
+    }
 
-/*     return 1; */
-/* } */
+    //3. insert g_Head into file
+    if(!SaveInOrder(g_Head, fp))
+    {
+        fclose(fp);
+        return 0;
+    }
+
+    fclose(fp);
+
+    return 1;
+}
 
 int main()
 {
@@ -462,19 +450,19 @@ int main()
             case 1:
                 Add();
                 break;
-            /* case 2: */
-            /*     Search(); */
-            /*     break; */
+            case 2:
+                Search();
+                break;
             case 3:
                 PrintAll();
                 break;
-            /* case 4: */
-            /*     Remove(); */
-            /*     break; */
+            case 4:
+                Remove();
+                break;
         }
     }
 
-    /* Save(DATA_FILE_NAME); */
+    Save(DATA_FILE_NAME);
     ReleasePostOrder(g_Head);
 
     return 0;
