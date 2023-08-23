@@ -41,7 +41,8 @@ d-7. writing malloc() from scratch :white_check_mark:
 e-ㄱ. 주소록\
 e-ㄱ-1. level1 - linkedlist 기반 주소록 :white_check_mark:\
 e-ㄱ-2. level2 - advanced linkedlist 기반 주소록 :white_check_mark:\
-e-ㄱ-3. level3 - bst 기반 주소록 :white_check_mark:
+e-ㄱ-3. level3 - bst 기반 주소록 :white_check_mark:\
+e-ㄱ-4. level4 - avl tree 기반 주소록 :white_check_mark:
 
 
 ---\
