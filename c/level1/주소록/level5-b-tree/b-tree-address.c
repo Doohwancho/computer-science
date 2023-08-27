@@ -23,6 +23,8 @@ struct SearchResult {
 };
 
 void split_child(struct BTreeNode*, int);
+int LoadList(char *pszFileName);
+int Save(char *pszFileName);
 
 
 void flush_stdin()
@@ -65,24 +67,31 @@ struct BTreeNode * create_node(int is_leaf) {
 void insert_non_full(struct BTreeNode * node, USERDATA key) {
     int i = node->num_keys - 1;
 
+    //leaf면?
     if (node->is_leaf) {
+        //크기 고려 적정 인덱스 i를 찾아서
         while (i >= 0 && strcmp(key.szName, node->keys[i].szName) < 0) {
             node->keys[i + 1] = node->keys[i];
             i--;
         }
+        //keys들에 해당 USERDATA를 저장함
         node->keys[i + 1] = key;
         node->num_keys++;
+    //internal node면?
     } else {
+        //역시 크기 고려 적정 인덱스 i를 찾아서
         while (i >= 0 && strcmp(key.szName, node->keys[i].szName) < 0) {
             i--;
         }
         i++;
+        //꽉찼으면 split()함
         if (node->children[i]->num_keys == MAX_KEYS) {
             split_child(node, i);
             if (strcmp(key.szName, node->keys[i].szName) > 0) {
                 i++;
             }
         }
+        //leaf에 key를 넣어야 하니까, 해당 leaf children으로 recursive -> 모든 키값은 leaf에 저장되네?
         insert_non_full(node->children[i], key);
     }
 }
@@ -250,7 +259,77 @@ void PrintAll()
 
 
 /***********************************
- * 기본 설정
+ * Save
+ */
+
+int SaveBTree(struct BTreeNode *node, FILE *fp) {
+    if (node == NULL) return 1;  // Success in this context.
+
+    // Save keys.
+    fwrite(node->keys, sizeof(USERDATA), node->num_keys, fp);
+
+
+    if (!node->is_leaf) {
+        for (int i = 0; i <= node->num_keys; i++) {
+            if (!SaveBTree(node->children[i], fp)) {
+                return 0;  // Failed to save child.
+            }
+        }
+    }
+    return 1;  // Success.
+}
+
+int Save(char *pszFileName) {
+    FILE *fp = fopen(pszFileName, "wb");
+    if (fp == NULL) {
+        puts("ERROR: 리스트 파일을 쓰기 모드로 열지 못했습니다.");
+        flush_stdin();
+        return 0;
+    }
+    int result = SaveBTree(root, fp);
+    fclose(fp);
+    return result;
+}
+
+/************************************
+ * Load
+ */
+
+int LoadBTree(FILE *fp) {
+    //1. get number of USERDATA from File
+    fseek(fp, 0, SEEK_END);
+    int fileSize = ftell(fp);
+    rewind(fp);
+
+    int num_keys = fileSize / sizeof(USERDATA);
+
+
+    //2. insert list of USREDATA into root node
+    USERDATA data;
+
+    for (int i = 0; i < num_keys; i++) {
+        if (fread(&data, sizeof(USERDATA), 1, fp) != 1) {
+            printf("USERDATA를 로드하는데 에러 발생!\n");
+            getchar();
+            return 0;
+        }
+        insert(&root, &data);
+    }
+
+    return 1;
+}
+
+
+int LoadList(char *pszFileName) {
+    FILE *fp = fopen(pszFileName, "rb");
+    if (fp == NULL) return 0;
+    LoadBTree(fp);
+    fclose(fp);
+    return (root != NULL);
+}
+
+/*******************************************
+ * main
  */
 
 int main()
@@ -258,7 +337,7 @@ int main()
     root = create_node(1);
 
     int nMenu = 0;
-    /* LoadList(DATA_FILE_NAME); */
+    LoadList(DATA_FILE_NAME);
 
     //main event loop
     while((nMenu = PrintUI()) != 0) //GUI
@@ -279,7 +358,7 @@ int main()
         }
     }
 
-    /* Save(DATA_FILE_NAME); */
+    Save(DATA_FILE_NAME);
     /* ReleasePostOrder(g_Head); */
 
     return 0;
