@@ -13,7 +13,7 @@ c. buffer\
 e. web server\
 f. event loop\
 g. multi-thread\
-
+h. compression
 
 x. HAProxy
 
@@ -32,7 +32,7 @@ g-1. simple web server handling many requests with multi-threads with mutex :whi
 g-2. singlethread -> multithread -> multithread with mutex comparsion in c :white_check_mark:\
 g-3. binary semaphore :white_check_mark:
 
-
+h-1. what is gzip :white_check_mark:
 
 ---\
 Reference
