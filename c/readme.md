@@ -22,7 +22,8 @@ a. c-syntax :white_check_mark:\
 b. lldb - debugger for mac :white_check_mark:\
 c. cmake :white_check_mark:\
 d. curiousity regarding c, cpp\
-e. level1
+e. level1\
+f. programming pearls
 
 ---\
 Todo
@@ -45,6 +46,7 @@ e-ㄱ-3. level3 - bst 기반 주소록 :white_check_mark:\
 e-ㄱ-4. level4 - avl tree 기반 주소록 :white_check_mark:\
 e-ㄱ-5. level5 - b-tree 기반 주소록 :white_check_mark:
 
+f-1. ch1. cracking the oyster - sorting 10,000,000 rows of 7 digit int using 1MB - bitvector :white_check_mark:
 
 ---\
 Reference
@@ -58,3 +60,5 @@ d-7. [writing my own malloc in c](https://www.youtube.com/watch?v=sZ8GJ1TiMdk&ab
 
 e-1. [linkedlist 기반 주소록](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lsszz210&logNo=220282477592) \
 e-2. advanced linkedlist by 널널한 개발자
+
+f-1. [bit vector sort](https://github.com/wuzhouhui/pearls/blob/master/chap1/exer3/sort.c)
