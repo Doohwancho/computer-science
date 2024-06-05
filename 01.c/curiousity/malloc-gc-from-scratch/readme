@@ -1,0 +1,119 @@
+---
+What is malloc()?
+
+
+memory allocation method during runtime(not compile time) in c.
+
+
+
+
+ex.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int *array;
+    int num_elements = 10;
+
+    // Allocate memory for an array of 10 integers
+    array = (int *)malloc(num_elements * sizeof(int));
+
+    if (array == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Initialize and print the array
+    for (int i = 0; i < num_elements; i++) {
+        array[i] = i * 2;
+        printf("array[%d] = %d\n", i, array[i]);
+    }
+
+    // Free the allocated memory
+    free(array);
+
+    return 0;
+}
+```
+
+
+
+
+
+---
+A. malloc() 구현 방법론1. Linear Allocator
+
+1. array1: fixed size로 나눠져 있고, 데이터 순차 저장.
+2. size_t heap_size;
+
+
+how it works?
+
+array1에 데이터 적재할 때마다, heap_size의 인덱스를 해당 사이즈만큼 늘림.
+free하고 싶으면 단순히 heap_size를 array1의 0번 인덱스로 바꾸기만 하면 됨.
+
+
+
+단점:
+1. not able to free part(some chunks of memory) and reuse that memory for something else
+2. 가변 사이즈 데이터 input시, 낭비되는 공간이 있다.
+
+
+---
+B. malloc() 구현 방법론2. Fixed Size Memory Allocator
+
+
+array1: fixed size로 나눠져 있고, 데이터 저장
+array2: array1에 free(empty) 공간에 대한 포인터가 담겨있음
+
+
+A-a. how to allocate memory?
+
+
+case1)
+array1의 인덱스 N번째 메모리 free()하고 싶다면,
+array1를 iterate 해서 해당 자리에 메모리가 비어있는지 먼저 확인한 후,
+비어있다면, allocate memory
+
+단점: O(N), array1의 heap size가 크면 클 수록 느려짐.
+
+
+case2)
+더 나은 방법
+array2를 사용해 array1에 빈 메모리 공간에 대한 포인터를 담아둠.
+빈 공간에 memory allocate 해야할 때, array1을 O(N)으로 다 돌지 말고, array2를 보고 바로 할당.
+
+
+단점: array1이 fixed size chunks 말고 various size chunks 라면?
+
+
+---
+C. malloc() 구현 방법론3. Variable Size Memory Allocator
+
+
+문제
+가변 사이즈 데이터를 메모리에 할당하려면,
+맨 처음 빈 array에 할당하는건 쉽겠지. 맨 끝에 .append()하면 되니까.
+문제는 꽉 차고, 중간에 있는 애들 free()한 후,
+insert하려는데, 빈 공간 사이즈에 안들어가면, 그 다음 빈 공간으로 넘겨야 하고, 머리아픔.
+이걸 어떻게 구현할까?
+
+
+
+
+
+---
+how to make garbage collector from scratch?
+
+
+1. array(heap)이 있는데, 얘를 8byte 크기로 windowing(1bit씩 움직이는거) 으로 array를 search 함.
+(이 때, 8byte인 이유는, pointer를 찾기 위함. (size of pointer == 8byte))
+2. pointer를 찾으면, 얘가 해당 heap 안에 다른 object를 가르키는지 체크한다.
+3. 이걸 다 한걸 graph로 합칠 수 있겠지?
+4. 그러면 connected node랑 그렇지 않은 고아 node가 나오겠지?
+5. 그러면 고아 node를 free()시키는게 garbage collector
+
+
+

@@ -1,0 +1,19 @@
+# what 
+minimal text editor
+
+# features 
+
+1. write 
+2. enter(enter)
+3. delete(backspace)
+4. save(command + s)
+5. quit(ctrl + q)
+
+
+## code block
+```c
+int main(){
+	if(){
+}	else 
+}
+```
