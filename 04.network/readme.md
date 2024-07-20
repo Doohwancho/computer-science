@@ -8,7 +8,7 @@ Modularize Network
 ---\
 Fields
 
-a. network protocols
+a. socket\
 c. buffer\
 e. web server\
 f. event loop\
@@ -21,10 +21,13 @@ x. HAProxy
 Concepts
 
 
+a-3. simple TCP socket network library 뜯어보기 :white_check_mark:
+
 c-1. stream splitted by buffer size :white_check_mark:\
 c-2. server includes payload size in response header for client to parse easily :white_check_mark:
 
 e-1. simple web server in c :white_check_mark:
+e-2. codecrafters-http-server's 예제 :white_check_mark:
 
 f-1. event loop from scratch in python :white_check_mark:
 
@@ -40,6 +43,7 @@ Reference
 
 a-1. [simple client-server socket connection in python](https://cumulativebackendstack.blogspot.com/2021/03/tcp-with-socket-programming-in-python-1.html) \
 a-2. [소켓 프로그래밍 - (13) TCP/IP 다중 통신 소스 코드 (fork 이용)](https://www.crocus.co.kr/463)
+a-3. [simple socket network library in c](https://github.com/Bixkitts/bb-net-lib)
 
 b-1. [simple client-server socket connection in python](https://cumulativebackendstack.blogspot.com/2021/03/udp-with-python-udpuser-datagram.html)
 
