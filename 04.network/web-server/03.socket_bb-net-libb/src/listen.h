@@ -11,6 +11,7 @@
 extern threadPool TCPthreadPool;
 extern threadPool UDPthreadPool;
 
+//client에서 보내는 packet을 이런 구조체로 받는 듯?
 typedef struct {
     Host       *localhost;
     Host       *remotehost;

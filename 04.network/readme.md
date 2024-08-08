@@ -26,8 +26,9 @@ a-3. simple TCP socket network library 뜯어보기 :white_check_mark:
 c-1. stream splitted by buffer size :white_check_mark:\
 c-2. server includes payload size in response header for client to parse easily :white_check_mark:
 
-e-1. simple web server in c :white_check_mark:
-e-2. codecrafters-http-server's 예제 :white_check_mark:
+e-1. simple web server in c :white_check_mark:\
+e-2. codecrafters-http-server's 예제 :white_check_mark:\
+e-3. analyze bb-net-lib (simple socket network library) :white_check_mark:
 
 f-1. event loop from scratch in python :white_check_mark:
 

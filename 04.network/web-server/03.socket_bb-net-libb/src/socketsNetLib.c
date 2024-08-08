@@ -12,7 +12,7 @@
 
 socketfd createSocket(socketfd value)             
 {
-    socketfd sockfd = value;
+    socketfd sockfd = value; //socketfd는 int일 뿐인데, socket file descriptor라고 구분지어 주기 위해 socketfd라는 커스텀 type을 만들어서 부여한 것.
     if (IS_INVALID_FD(socket)) { 
         perror("\nSocket creation failed"); 
         return ERROR;
@@ -25,6 +25,8 @@ void closeSocket(socketfd sockfd)
     close(sockfd);
 }
 
+//Q. what is 'binding socket' means?
+//A. bind a socket with specific host with port
 int bindSocket(socketfd sockfd, Host* localhost)
 {
     struct sockaddr* boundAddress = ( struct sockaddr *)&localhost->address;
@@ -38,11 +40,11 @@ int bindSocket(socketfd sockfd, Host* localhost)
 }
 int setSocketNonBlock(socketfd sockfd)
 {    
-    int flags = fcntl(sockfd, F_GETFL, 0);
+    int flags = fcntl(sockfd, F_GETFL, 0); //fcntl = file control() to get current flag of socket 
     if (flags == -1) {
         return ERROR;
     }
-    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) {
+    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) { //set socket to non-blocking mode 
         perror("Error setting socket to non-blocking mode");
         return ERROR;
     }

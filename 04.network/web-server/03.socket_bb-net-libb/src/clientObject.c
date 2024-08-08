@@ -26,7 +26,7 @@ static void removeHostAtCacheIndex (int cacheIndex, int hostIndex);
 
 Host* createHost(const char *ip, const uint16_t port)
 {
-    Host* host = NULL;
+    Host* host = NULL; //호스트를 만들어서, 
 
     host = (struct Host*)calloc(1, sizeof(struct Host));
     if (host == NULL) {
@@ -35,11 +35,11 @@ Host* createHost(const char *ip, const uint16_t port)
     }
     //filling in the data of the host's ip.
     strcpy(host->addressStr, ip);
-    host->id                 = atomic_fetch_add(&hostIDCounter, 1);
-    host->address.sin_family = AF_INET;
+    host->id                 = atomic_fetch_add(&hostIDCounter, 1); //각 client마다 고유한 id를 부여한다. 구분지어야 되니까. 
+    host->address.sin_family = AF_INET; //address family를 IPv4로 지정한다. 
     host->address.sin_port   = htons(port);
 
-    inet_pton            (AF_INET, ip, &host->address.sin_addr);
+    inet_pton            (AF_INET, ip, &host->address.sin_addr); //inet_pton() converts IP address string to binary form and store it in the structure
     return host;
 }
 

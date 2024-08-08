@@ -83,8 +83,14 @@ static int waitForReady(int sockfd)
 
 //TODO - takeaway: how sendDataTCP() works?
 //data를 remotehost에 TCP protocol로 보내는 함수
-//lock을 쓴다. 여러 쓰레드가 동시에 한 객체에 접근하나보다. 
-//while loop 안에서 datasize일 때까지 data를 byte로 변환해서 보내는 것 같긴 한데, 어떻게 보냄?
+
+//Q. lock을 어떤식으로 씀?
+//A. lockIndex = getHostID(remotehost) % SEND_LOCK_COUNT를 통해 각 호스트에 대해 고유한 락을 할당합니다.
+//   lockIndex에 mutex lock을 건다. 
+//   이렇게 하면 서로 다른 호스트로의 전송은 병렬로 처리할 수 있지만, 같은 호스트로의 전송은 순차적으로 처리됩니다.
+
+//Q. 데이터 어떻게 전송함? 
+//while loop 안에서 datasize일 때까지 data를 byte로 변환해서 보내는 것인 듯?
 //send_variants[]가 함수를 2분기 쳐서 send_TCP_unencrypted로 보내는 것인 듯?
 //send_variants() 함수에 파라미터로 이걸 넣음. {remotehost, data, datasize}
 //그러면, send_TCP_unencrypted()에서 send(getSocket()); 함 
@@ -105,9 +111,9 @@ int sendDataTCP(const char *data, const size_t datasize, Host *remotehost)
     pthread_mutex_lock(&sendLocks[lockIndex]); //lock index를 여러 쓰레드가 값을 업데이트 하기 때문에, 락걸어줌
     while (totalBytesSent < datasize) {
         // A switch to send packets in different ways
-        status = send_variants[packetSenderType](&sendArgs);
+        status = send_variants[packetSenderType](&sendArgs); //send_variants[] 가 함수를 분기처리 해서 $sendArg 데이터를 보내는 것. 
 
-        if (status == -1) {
+        if (status == -1) { //에러처리
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 if (waitForReady(getSocket(remotehost)) < 0) {
                     perror              ("\nSelect error");
@@ -123,13 +129,13 @@ int sendDataTCP(const char *data, const size_t datasize, Host *remotehost)
             pthread_mutex_unlock (&sendLocks[lockIndex]);
             return ERROR;
         }
-        if (status == 0) {
+        if (status == 0) { //에러처리 
             fprintf          (stderr, "\nSocket is closed, couldn't send data");
             closeConnections (remotehost);
             pthread_mutex_unlock(&sendLocks[lockIndex]);
             return SUCCESS;
         }
-        totalBytesSent += status;
+        totalBytesSent += status; //stream으로 끊어서 순차적으로 보내는거임 
     }
     pthread_mutex_unlock(&sendLocks[lockIndex]);
     return SUCCESS;

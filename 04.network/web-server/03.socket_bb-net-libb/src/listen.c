@@ -205,7 +205,7 @@ int listenForTCP(Host *localhost,
             }
         }
 
-        receptionArgs = (packetReceptionArgs*)calloc(1, sizeof(packetReceptionArgs));
+        receptionArgs = (packetReceptionArgs*)calloc(1, sizeof(packetReceptionArgs)); //client에서 보내는 것을 'packetReceptionArgs' 구조체로 받아서 
         if (receptionArgs == NULL) {
             goto early_exit;
         }
@@ -221,7 +221,9 @@ int listenForTCP(Host *localhost,
             goto early_exit;
         }
 
-        addTaskToThreadPool(TCPthreadPool, (void*)receiveTCPpackets, receptionArgs); //1. create new thread to handle listening to that specific connection. 2. This allows the server to handle multiple connections concurrently by delegating the task of receiving data from each connection to separate threads.
+        addTaskToThreadPool(TCPthreadPool, (void*)receiveTCPpackets, receptionArgs); //만들어 둔 thread pool에 1000 size task_queue에 넣는다. 물론 이 때 mutex lock을 쓴다. 
+        //1. create new thread to handle listening to that specific connection. 
+        //2. This allows the server to handle multiple connections concurrently by delegating the task of receiving data from each connection to separate threads.
 
     }
 
