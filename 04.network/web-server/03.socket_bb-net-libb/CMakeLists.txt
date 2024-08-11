@@ -63,6 +63,16 @@ target_compile_options(${TEST_CLIENT_NAME} PRIVATE $<$<CONFIG:Debug>:-O0;-g3;-gg
 target_compile_definitions(${TEST_CLIENT_NAME} PRIVATE $<$<CONFIG:Debug>: DEBUG>)
 target_link_libraries(${TEST_CLIENT_NAME} PRIVATE ${PROJECT_NAME})
 
+# Add explicit dependency on the library
+add_dependencies(${TEST_CLIENT_NAME} ${PROJECT_NAME})
+
+# Force client to always rebuild
+add_custom_command(
+    TARGET ${TEST_CLIENT_NAME}
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_SOURCE_DIR}/tests/client.c
+)
+
 ###############################################################
 # ----- Complicated installation-related stuff past here -----#
 ###############################################################

@@ -16,7 +16,7 @@
 
 
 // Global switch for how packets should be sent
-PacketSenderType packetSenderType = PACKET_SENDER_TCP;
+PacketSenderType packetSenderType = PACKET_SENDER_TCP; //0
 
 typedef ssize_t (*PacketSender)(PacketSendingArgs*);
 static inline ssize_t send_TCP_unencrypted (PacketSendingArgs *args);
@@ -57,6 +57,7 @@ int sendDataUDP(const char *data, const ssize_t datasize, Host *remotehost)
 
 static inline ssize_t send_TCP_unencrypted (PacketSendingArgs *args)
 {
+    //remotehost에 bind된 소켓을 찾아, buffer size 크기만큼 byte를 보냄. send()는 socket.h가 제공하는 함수
     return send(getSocket(args->remotehost), args->buffer, args->bytesToProcess, 0);
 }
 static inline ssize_t send_TCP_encrypted (PacketSendingArgs *args)
@@ -111,7 +112,7 @@ int sendDataTCP(const char *data, const size_t datasize, Host *remotehost)
     pthread_mutex_lock(&sendLocks[lockIndex]); //lock index를 여러 쓰레드가 값을 업데이트 하기 때문에, 락걸어줌
     while (totalBytesSent < datasize) {
         // A switch to send packets in different ways
-        status = send_variants[packetSenderType](&sendArgs); //send_variants[] 가 함수를 분기처리 해서 $sendArg 데이터를 보내는 것. 
+        status = send_variants[packetSenderType](&sendArgs); //send_variants[0] 가 함수를 분기처리 해서 $sendArg 데이터를 보내는 것. 
 
         if (status == -1) { //에러처리
             if (errno == EAGAIN || errno == EWOULDBLOCK) {

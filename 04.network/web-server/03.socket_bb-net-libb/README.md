@@ -87,13 +87,24 @@ src/tests/client.c
     - socket.h에서 제공하는 connect() 함수로 socketfd와 remoteAddress를 연결
 2. sendDataTCP()
     - 보낼 때도 socketfd(int)마다 mutex lock을 걸어서, 여러 socketfd들을 TCP data send() 할 수 있지만, 각각 socket은 순차적으로 보내게 됨. 
-    - send_variants[packetSenderType](&sendArgs) 으로 분기 처리해서 데이터 보내고, 보내는 데이터는 &sendArgs
+    - `send_variants[packetSenderType](&sendArgs)` 으로 분기 처리해서 데이터 보내고, 보내는 데이터는 &sendArgs
 
 
 
 ## d. takeaway 
 VSC extension: TODO만 모아보는 걸로,
 TODO - takeaway: 에 적은 주석 보기
+
+
+## e. todo
+0. 종료시 리소스 누구 없게 하기 -- clear
+1. window 버전으로 옮기기
+2. chat room 기능 추가
+3. select 방식의 blocking 방식에서 non-blocking 방식으로 변경해보기
+4. window iocp API 건드려보기 
+5. 소켓 동접 1,000개 부하
+6. db 연동
+7. game server로 바꾸기 (ex. chess)
 
 
 # B. how to build on mac? 

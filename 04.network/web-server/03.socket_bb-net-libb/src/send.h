@@ -13,9 +13,9 @@ typedef struct {
 } PacketSendingArgs;
 
 typedef enum {
-    PACKET_SENDER_TCP,
-    PACKET_SENDER_TLS,
-    PACKET_SENDER_COUNT
+    PACKET_SENDER_TCP, //0
+    PACKET_SENDER_TLS, //1
+    PACKET_SENDER_COUNT //2
 }PacketSenderType;
 
 BBNETAPI int sendDataUDP  (const char *data, 

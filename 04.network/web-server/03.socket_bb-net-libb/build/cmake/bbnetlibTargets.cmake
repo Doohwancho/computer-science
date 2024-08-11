@@ -50,15 +50,15 @@ unset(_cmake_expected_targets)
 add_library(netlib::bbnetlib STATIC IMPORTED)
 
 set_target_properties(netlib::bbnetlib PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/Users/cho-cho/dev/tree/computer-science/04.network/web-server/03.bb-net-lib/include"
-  INTERFACE_LINK_LIBRARIES "/opt/homebrew/Cellar/openssl@3/3.2.1/lib/libssl.dylib;/opt/homebrew/Cellar/openssl@3/3.2.1/lib/libcrypto.dylib"
+  INTERFACE_INCLUDE_DIRECTORIES "/Users/cho-cho/dev/tree/computer-science/04.network/web-server/03.socket_bb-net-libb/include"
+  INTERFACE_LINK_LIBRARIES "/opt/homebrew/Cellar/openssl@3/3.3.1/lib/libssl.dylib;/opt/homebrew/Cellar/openssl@3/3.3.1/lib/libcrypto.dylib"
 )
 
 # Import target "netlib::bbnetlib" for configuration "Release"
 set_property(TARGET netlib::bbnetlib APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(netlib::bbnetlib PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "C"
-  IMPORTED_LOCATION_RELEASE "/Users/cho-cho/dev/tree/computer-science/04.network/web-server/03.bb-net-lib/build/libbbnetlib.a"
+  IMPORTED_LOCATION_RELEASE "/Users/cho-cho/dev/tree/computer-science/04.network/web-server/03.socket_bb-net-libb/build/libbbnetlib.a"
   )
 
 # This file does not depend on other imported targets which have
