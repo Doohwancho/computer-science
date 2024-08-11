@@ -28,7 +28,8 @@ c-2. server includes payload size in response header for client to parse easily 
 
 e-1. simple web server in c :white_check_mark:\
 e-2. codecrafters-http-server's 예제 :white_check_mark:\
-e-3. analyze bb-net-lib (simple socket network library) :white_check_mark:
+e-3. analyze bb-net-lib (simple socket network library) :white_check_mark:\
+e-4. simple websocket :white_check_mark:
 
 f-1. event loop from scratch in python :white_check_mark:
 
