@@ -37,7 +37,8 @@ d-3. oop in c :white_check_mark:\
 d-4. memory size comparison, stack vs heap :white_check_mark:\
 d-5. fork() :white_check_mark:\
 d-6. multiple fork() :white_check_mark:\
-d-7. writing malloc() from scratch :white_check_mark:
+d-7. writing malloc() from scratch :white_check_mark:\
+d-8. pointer :white_check_mark:
 
 e-ㄱ. 주소록\
 e-ㄱ-1. level1 - linkedlist 기반 주소록 :white_check_mark:\

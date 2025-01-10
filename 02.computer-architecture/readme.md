@@ -10,7 +10,8 @@ Modularize computer architecture concepts
 Projects
 
 
-a. NandToTetris
+a. NandToTetris\
+b. encoding
 
 
 
@@ -31,6 +32,7 @@ a-10. compiler II - code generation\
 a-11. operating system\
 a-12. high level language
 
+b-1. 같은 문자열/숫자가 다른 encoding rule이면 깨진다. 그리고 encoding마다 byte size도 다르다. :white_check_mark:
 
 
 ---\
