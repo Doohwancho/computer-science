@@ -1,6 +1,6 @@
 # Define the library for your custom STL
 add_library(my_stl STATIC
-    src/vector.cpp
+    src/02.vector/vector.cpp
 
     # Add other implementation files here
     # src/list.cpp

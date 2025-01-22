@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main() {
-    Vector<int> vec;
+    KirbyVector<int> vec;
     vec.push_back(10);
     vec.push_back(20);
     vec.push_back(30);
