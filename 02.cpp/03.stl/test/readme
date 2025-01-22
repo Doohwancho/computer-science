@@ -1,8 +1,18 @@
 ---
+How to run? 
+
+1. cd 02.cpp/build
+2. cmake ..
+3. cmake --build . --clean-first
+4. ./03.stl/test_stl
+
+
+---
 Tips on writing tests 
 
 1. write modular test
     - Test each method of Vector (e.g., push_back, resize, clear, size, etc.) independently.
 2. write edge cases 
     - Test edge cases like resizing to zero, accessing out-of-bounds indices, and adding/removing many elements
+
 

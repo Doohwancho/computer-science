@@ -6,26 +6,11 @@
 
 template<typename T>
 class KirbyVector {
-public:
-    KirbyVector(): data(nullptr), capacity(0), size(0) {}  
-    ~KirbyVector() { delete[] data; }
-    
-    std::size_t get_size() const { return size; }  
-    
-    
-    void push_back(const T& value) {
-        if (size == capacity) {
-            resize(capacity == 0 ? 1 : capacity * 2);
-        }
-        data[size++] = value;
-    }
-    
-    T& operator[](std::size_t index) {
-        if (index >= size) {
-            throw std::out_of_range("Index out of range");  
-        }
-        return data[index];
-    }
+
+// Q. 헤더파일에 public 다 구현해 놓으니까, .cpp에 구현 안해도 컴파일 되고 돌아가네??
+// public:
+//     KirbyVector(): data(nullptr), capacity(0), size(0) {}  
+//     ~KirbyVector() { delete[] data; }
 
 private:
     T* data;

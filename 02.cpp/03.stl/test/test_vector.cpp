@@ -79,10 +79,137 @@ void test_resize() {
     std::cout << "test_resize passed\n";
 }
 
+void test_insert() {
+    std::cout << "\nTesting Insert..." << std::endl;
+    KirbyVector<int> v;
+    v.push_back(1);
+    v.push_back(3);
+
+    //insert in the middle
+    v.insert(1,2);
+    if(v.get_size() != 3 || v[0] != 1 || v[1] != 2 || v[2] != 3) {
+        std::cerr << "test_insert() failed!: middle insert incorrect" << std::endl;
+        exit(1);
+    }
+
+    // insert at the beginning 
+    v.insert(0,0);
+    if(v[0] != 0 || v.get_size() != 4) {
+        std::cerr << "test insert failed!: front insert incorrect" << std::endl;
+        exit(1);
+    }
+
+    std::cout << "test_insert passed" << std::endl; 
+}
+
+void test_erase() {
+    std::cout << "\nTesting erase..." << std::endl;
+    KirbyVector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    v.push_back(3);
+    
+    v.erase(1);  // Remove 2
+    if (v.get_size() != 2 || v[0] != 1 || v[1] != 3) {
+        std::cerr << "test_erase failed: elements incorrect after erase\n";
+        exit(1);
+    }
+    
+    std::cout << "test_erase passed\n";
+}
+
+void test_clear() {
+    std::cout << "\nTesting clear..." << std::endl;
+    KirbyVector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    
+    v.clear();
+    if (!v.empty() || v.get_size() != 0) {
+        std::cerr << "test_clear failed: vector not empty after clear\n";
+        exit(1);
+    }
+    
+    std::cout << "test_clear passed\n";
+}
+
+void test_copy_constructor() {
+    std::cout << "\nTesting copy constructor..." << std::endl;
+    KirbyVector<int> v1;
+    v1.push_back(1);
+    v1.push_back(2);
+    
+    KirbyVector<int> v2(v1);
+    if (v2.get_size() != v1.get_size() || v2[0] != v1[0] || v2[1] != v1[1]) {
+        std::cerr << "test_copy_constructor failed: copy not identical\n";
+        exit(1);
+    }
+    
+    // Modify original to ensure deep copy
+    v1[0] = 100;
+    if (v2[0] == 100) {
+        std::cerr << "test_copy_constructor failed: shallow copy detected\n";
+        exit(1);
+    }
+    
+    std::cout << "test_copy_constructor passed\n";
+}
+
+void test_assignment_operator() {
+    std::cout << "\nTesting assignment operator..." << std::endl;
+    KirbyVector<int> v1;
+    v1.push_back(1);
+    v1.push_back(2);
+    
+    KirbyVector<int> v2;
+    v2 = v1;
+    
+    if (v2.get_size() != v1.get_size() || v2[0] != v1[0] || v2[1] != v1[1]) {
+        std::cerr << "test_assignment_operator failed: copy not identical\n";
+        exit(1);
+    }
+    
+    // Modify original to ensure deep copy
+    v1[0] = 100;
+    if (v2[0] == 100) {
+        std::cerr << "test_assignment_operator failed: shallow copy detected\n";
+        exit(1);
+    }
+    
+    std::cout << "test_assignment_operator passed\n";
+}
+
+void test_iterator() {
+    std::cout << "\nTesting iterators..." << std::endl;
+    KirbyVector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    v.push_back(3);
+    
+    int sum = 0;
+    for (auto it = v.begin(); it != v.end(); ++it) {
+        sum += *it;
+    }
+    
+    if (sum != 6) {
+        std::cerr << "test_iterator failed: iterator traversal incorrect\n";
+        exit(1);
+    }
+    
+    std::cout << "test_iterator passed\n";
+}
+
 int main() {
     test_push_back();
     test_resize<int>();
     test_index_out_of_range();
+    test_insert();
+    test_erase();
+    test_clear();
+    test_copy_constructor();
+    test_assignment_operator();
+    test_iterator();
+
     std::cout << "All tests passed.\n";
     return 0;
 }
