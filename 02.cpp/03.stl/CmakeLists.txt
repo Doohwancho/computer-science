@@ -1,0 +1,14 @@
+# Define the library for your custom STL
+add_library(my_stl STATIC
+    src/vector.cpp
+
+    # Add other implementation files here
+    # src/list.cpp
+)
+
+# Include the header files
+target_include_directories(my_stl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# unit test
+add_executable(test_stl test/test_vector.cpp)
+target_link_libraries(test_stl my_stl)

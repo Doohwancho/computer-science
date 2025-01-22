@@ -1,0 +1,181 @@
+============================================================
+A. what is binary search tree?
+
+1. has 2 children: left and right
+2. left child is less than parent
+3. right child is greater than parent
+
+
+---
+what is benefit of binary search tree?
+
+
+search is faster than linked list
+O(log n) vs O(n)
+
+
+---
+why is it O(log n)?
+
+because it is a tree, and it is balanced
+
+
+---
+what if it is not balanced tree?
+
+it is O(n)
+
+
+---
+if it's O(n), why not just use binary search tree all the time? instead of linked list?
+
+
+because it is not efficient to insert and delete
+
+you can simple attach a new node to the end of the linked list, but you have to find the right place to insert in binary search tree
+
+
+
+
+============================================================
+B. what is AVL tree?
+
+1. has 2 children: left and right
+2. left child is less than parent
+3. right child is greater than parent
+--- binary search tree
+
+4. height of left and right child is not more than 1
+
+
+basically, 1~3 is same as binary search tree, but 4 is different
+
+
+---
+what is benefit of AVL tree?
+
+
+search is faster than binary search tree
+because it is balanced, therefore there is no broken balanced BST
+
+
+---
+how to balance AVL tree?
+
+
+rotate
+
+
+---
+what is rotate?
+
+
+see it yourself.
+
+https://visualgo.net/en/bst?mode=AVL
+
+try to insert a node that breaks the rule of AVL tree: height of left and right child is not more than 1
+
+if you do, you will see that it rotates the tree to balance it
+
+
+
+============================================================
+C. what is red-black tree?
+
+
+1. has 2 children: left and right
+2. left child is less than parent
+3. right child is greater than parent
+--- binary search tree
+
+4. height of left and right child is not more than 1 -> WRONG! height 제한이 더 느슨하기 때문에 rotate 덜해서 RBT가 AVL tree보다 overhead가 적은 것.
+--- AVL tree
+
+5. every node is either red or black
+6. root is black
+7. every leaves nodes(NIL) is black (NIL is not node, it is just a place holder)
+8. if a node is red, both of its children are black
+9. all paths from the root node to its NIL descendants contain the same number of black nodes
+--- red black tree
+
+
+---
+red black tree의 다른 특징
+
+1. node requires one bit of extra storage to hold the color information
+2. root to fathest NIL is at most twice as long as root to nearest NIL
+3. search is no different, but insert | remove requires rotations to maintain the properties. (search, insert, remove are all O(logN))
+
+
+---
+Q. if AVL tree and red black tree are both balanced, why do we need red black tree?
+
+
+1. AVL tree requires more rotations to maintain balance than red black tree
+2. AVL tree are more rigidly blanced than red black tree. therefore, more rotation -> more overhead
+
+
+============================================================
+D. what is heap?
+
+
+1. has 2 children: left and right
+2. left child is less than parent  (X)
+3. right child is greater than parent (X)
+--- binary search tree
+4. 제일 큰 값이나 작은 값이 root node에 있는게 특징(max-heap | min-heap)
+
+
+결론:
+1. heap은 binary tree의 일종이나, binary search tree는 아니다.
+2. 가장 큰 값이나 작은 값이 root node에 있는게 특징이고, 이 점이 중점적으로 활용된다.
+
+
+
+
+---
+Q. see how it runs visually
+
+
+https://visualgo.net/en/heap
+
+
+신기한 점
+
+0. (핵심) insertNode() 할 떄, root에서 내려가면서 넣는게 아니라, leaf에서 출발하는데, 받은 값이 부모보다 크면, 부모랑 자리를 swap()하는데, 그마저도 크면 recursive로 root node까지 swap하네?
+1. heap은 binary search tree가 아니다. (left child is less than parent, right child is greater than parent)
+	웹사이트 보면 알겠지만, heap은 왼쪽 자식이 부모보다 작을 수도 있고, 크거나 같을 수도 있다.
+2. heap은 balanced tree가 아니다. (height of left and right child is not more than 1)
+	웹사이트 보면 왼쪽 자식이 오른쪽 자식보다 크다. (left child is greater than right child)
+
+
+
+---
+Q. heap의 장점 (다른 binary tree들 대비)
+
+1. quicker to find minimum or maximum element.
+	1-1. heap is specialized datastructure for ordering elements. why? -> maximum | minimum value는 max-heap이나 min-heap에서 root node이니까, 그냥 return rootNode.value만 하면 되니까 O(1)임.
+	1-2. 대신 insert, remove는 O(logN)이다. (binary search tree의 insert, remove와 동일). 왜 log2N이냐면, children이 2개라 layer마다 2의 log로 계산되기 때문. 그걸 N번하니까 2를 밑으로 하는 log_2(N)인 것.
+	1-3. return root.value가 O(1)이기 때문에, heap is used for priority queue
+
+
+
+---
+Q. how to solve real-life example with heap?
+
+1. priority queue
+2. graph algorithm such as Dijkstra's algorithm
+3. memory management for allocate & deallocate memory(gc)
+4. sorting algorithm (heap sort)
+5. manage process scheduling in os
+
+
+
+---
+Q. how heap is directly related with memory management?
+
+
+yet.
+
+take a look at tsoding video about heap and memory management implemented from scratch in c
