@@ -1,0 +1,15 @@
+---
+what 
+
+
+mini-wireshark
+
+row socket programming 
+
+---
+TODO
+
+1. Use vectors for packet storage
+2. use maps for maintaining statistics like packet counts by protocol.
+3. advanced feature: Implement protocol parsers for HTTP, DNS, or TCP 
+

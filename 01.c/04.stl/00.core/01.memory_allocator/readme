@@ -1,0 +1,118 @@
+---
+What 
+
+custom memory manager or allocator 
+
+Replace standard memory management (like new and delete) with your allocator, and optimize it for performance
+
+
+---
+How 
+
+```
+make
+./test_allocator
+```
+
+---
+Overview
+
+
+1. type of allocatorss
+    1. general purpose: malloc/free
+    2. specialized allocator: fixed-size objects, stack allocation, or memory pools
+2. key concepts
+    1. mmap/sbrk wrapper
+    2. basic allocation/free
+    3. defragmentation 
+3. requirements
+    1. thread-safety
+    2. debugging tools: detecting leaks, invalid access, etc
+4. performance goal
+    1. speed
+    2. fragementation control
+    3. memory overhead optimization
+
+
+---
+Prerequisites
+
+1. heap memory
+2. free lists
+    - goal: tracks free blocks
+    - simple and efficient for fixed-size allocations 
+3. how system calls(sbrk & mmap) allocate memory from os
+4. study existing allocators: dlmalloc, jemalloc, tcmalloc
+
+
+---
+Plan your Memory layout
+
+
+1. header: to store meta data(block size, used status)
+2. alignment: ensure blocks that are aligned for performance and hardware requirements
+3. data blocks: the actual user memory 
+
+
+
+---
+Choose data structure 
+
+
+1. free list: a linked list(array) to track free memory blocks
+    - goal: tracks free blocks
+    - simple and efficient for fixed-size allocations 
+2. bitmaps: for managing fixed-size blocks 
+3. buddy system: for dynamic block splitting and merging
+    - divides memory into power-of-two blocks
+    - fast and good for dynamic allocations 
+4. binary tree
+    - keeps block sorted for fast allocation
+    - suitable for large or varying block sizes
+5. red-black tree: for quick allocation and de-allocation in advanced allocators
+
+
+---
+implement basic features
+
+
+1. initialize memory pool
+    - use mmap or a static array for your initial memory pool
+2. allocation my_malloc
+    - Traverse the free list or relevant structure to find a suitable block 
+    - Split blocks if needed and update metadata 
+3. deallocation my_free
+    - Mark a block as free 
+    - Coalesce adjacent free blocks 
+4. resize my_realloc
+    - Extend or shrink existing blocks or reallocate new space
+
+
+---
+implement advanced features
+
+
+1. thread safety: add locks or thread-local storage
+2. segregated storage: divide memory into classes for small and large blocks 
+3. fragmentation control: add techniques to reduce external/internal fragementation
+
+
+
+---
+Test
+
+
+1. write test cases
+    - allocate and free various-size blocks
+    - stress test with multi-threaded programs 
+2. benchmark performance
+3. debug memory issues (use tools like valgrind)
+
+
+---
+Optimization
+
+
+1. enchange performance by using better algorithm
+2. reduce overhead: minimize metadata and internal fragementation
+3. custom fit: tailor the allocator to specific use-cases

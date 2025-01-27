@@ -1,0 +1,16 @@
+---
+TODO 
+
+1. handle http GET request
+2. handle http POST request
+3. use queue for request handling
+4. use maps for for routing 
+5. use vector for response construction
+---
+advanced features
+
+6. support basic CRUD 
+7. support for multi-threading
+8. connection pooling
+9. websocket communication 
+
