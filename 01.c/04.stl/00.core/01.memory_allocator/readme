@@ -5,9 +5,19 @@ custom memory manager or allocator
 
 Replace standard memory management (like new and delete) with your allocator, and optimize it for performance
 
+주의!
+
+user space에서 kernel level, 메모리를 syscall 안타고 물리적으로 접근 불가. 
+그래서 직접 메모리를 다이렉트로 받아서 할당하는 방식으로 malloc을 만드는게 아니라,
+mmap 같은 wrapper class API 써서 구현한다. 
+
+만약 더 로우 레벨에서 메모리를 페이지 단위로 할당받고 vtable 어쩌구 알려면, 
+pintos에서 malloc, palloc, bitmap 파일을 읽어라. 
+
 
 ---
 How 
+
 
 ```
 make
@@ -17,25 +27,30 @@ make
 ---
 Overview
 
-
-1. type of allocatorss
-    1. general purpose: malloc/free
-    2. specialized allocator: fixed-size objects, stack allocation, or memory pools
-2. key concepts
-    1. mmap/sbrk wrapper
-    2. basic allocation/free
-    3. defragmentation 
-3. requirements
-    1. thread-safety
-    2. debugging tools: detecting leaks, invalid access, etc
-4. performance goal
-    1. speed
-    2. fragementation control
-    3. memory overhead optimization
+- 보는 순서 (pintos에서..)
+    1. palloc.h/c 먼저 이해 (페이지 할당자)
+    2. bitmap.h/c 살펴보기 (메모리 관리 보조)
+    3. malloc.h/c 구현 (palloc 기반으로)
+- 개념 
+    1. type of allocatorss
+        1. general purpose: malloc/free
+        2. specialized allocator: fixed-size objects, stack allocation, or memory pools
+    2. key concepts
+        1. mmap/sbrk wrapper
+        2. basic allocation/free
+        3. defragmentation 
+    3. requirements
+        1. thread-safety
+        2. debugging tools: detecting leaks, invalid access, etc
+    4. performance goal
+        1. speed
+        2. fragementation control
+        3. memory overhead optimization
 
 
 ---
 Prerequisites
+
 
 1. heap memory
 2. free lists

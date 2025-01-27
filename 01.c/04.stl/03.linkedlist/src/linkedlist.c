@@ -1,5 +1,6 @@
 #include "linkedlist.h"
-#include <stdlib.h>
+// #include <stdlib.h> //used to use it for malloc(), but now that i have my custom malloc, not using it anymore
+#include "memory_allocator.h"
 #include <string.h>
 #include <assert.h>
 
@@ -8,15 +9,15 @@
  * Private Functions 
  */ 
 static Node* create_node(void* data, size_t size) { //여기서 size는 자료형의 사이즈. ex) int형의 사이즈 
-    Node* node = (Node*)malloc(sizeof(Node)); //자료구조 'Node'만큼 메모리 확보
+    Node* node = (Node*)my_malloc(sizeof(Node)); //자료구조 'Node'만큼 메모리 확보
     if(!node) return NULL; //Node_size 만큼 메모리 없다? 반환
 
     // Allocate memory for data and copy it 
-    void* data_copy = malloc(size); //data의 자료형 만큼의 메모리 확보. c엔 generic 없어서 void* 타입 쓰는 것. size로 자료형의 사이즈를 명시에서 그걸로 타입 유추
+    void* data_copy = my_malloc(size); //data의 자료형 만큼의 메모리 확보. c엔 generic 없어서 void* 타입 쓰는 것. size로 자료형의 사이즈를 명시에서 그걸로 타입 유추
     if(!data_copy) {  //메모리 확보가 안됬으면, 
-        free(node); //Node의 메모리 초기화 
+        my_free(node); //Node의 메모리 초기화 
         return NULL; //break
-    }
+    } 
 
     memcpy(data_copy, data, size); //확보한 메모리에 data를 덮어 씌운다.
     node->data = data_copy; //Node에 데이터에 데이터 삽입
@@ -33,7 +34,7 @@ static Node* create_node(void* data, size_t size) { //여기서 size는 자료�
  * Core Linkedlist operations
  */
 LinkedList* list_create(void) {
-    LinkedList* list = (LinkedList*)malloc(sizeof(LinkedList)); //malloc으로 LinkedList 자료형의 크기만큼 메모리할당 받으면, void*(generic)으로 반환하는데, 이걸 LinkedList* 타입으로 명시한다.
+    LinkedList* list = (LinkedList*)my_malloc(sizeof(LinkedList)); //malloc으로 LinkedList 자료형의 크기만큼 메모리할당 받으면, void*(generic)으로 반환하는데, 이걸 LinkedList* 타입으로 명시한다.
     if(!list) return NULL;
     
     list->head = NULL;
@@ -43,10 +44,10 @@ LinkedList* list_create(void) {
     return list;
 }
 
-static void free_node(Node* node) {
+static void my_free_node(Node* node) {
     if(node) {
-        free(node->data); //노드 내부에 참조하는 node->data도 free() 해줘야 한다!
-        free(node);
+        my_free(node->data); //노드 내부에 참조하는 node->data도 free() 해줘야 한다!
+        my_free(node);
     }
 }
 
@@ -56,7 +57,7 @@ void list_clear(LinkedList* list) {
     Node* current = list->head;
     while(current) {
         Node* next = current->next;
-        free_node(current);
+        my_free_node(current);
         current = next;
     }
 
@@ -68,7 +69,7 @@ void list_destroy(LinkedList* list) {
     if(!list) return;
 
     list_clear(list);
-    free(list);
+    my_free(list);
 }
 
 bool list_is_empty(const LinkedList* list) {
@@ -133,10 +134,10 @@ bool list_remove_at(LinkedList* list, size_t index, void** out_data) {
     if (out_data) {
         *out_data = to_remove->data;
     } else {
-        free(to_remove->data);
+        my_free(to_remove->data);
     }
 
-    free(to_remove);
+    my_free(to_remove);
     list->length--;
     return true;
 }
@@ -194,11 +195,11 @@ bool list_set_at(LinkedList* list, size_t index, void* data, size_t size) {
         current = current->next;
     }
 
-    void* new_data = malloc(size);
+    void* new_data = my_malloc(size);
     if(!new_data) return false;
     
     memcpy(new_data, data, size);
-    free(current->data);
+    my_free(current->data);
     current->data = new_data;
     current->size = size;
 

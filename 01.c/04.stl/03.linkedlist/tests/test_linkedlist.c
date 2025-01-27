@@ -1,8 +1,9 @@
+#include "linkedlist.h"
+#include "memory_allocator.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "linkedlist.h"
 
 // Test helper functions
 static void print_int(void* data, size_t size, void* user_data) {
@@ -27,6 +28,7 @@ static void test_append(void) {
     printf("Testing append and prepend operations...\n");
     
     LinkedList* list = list_create();
+    assert(list != NULL);  // list_create 성공 확인
     
     // Test append
     int values[] = {1, 2, 3, 4, 5};
@@ -70,7 +72,7 @@ static void test_insert_remove(void) {
     void* removed_data;
     assert(list_remove_at(list, 2, &removed_data));
     assert(*(int*)removed_data == insert_val);
-    free(removed_data);
+    my_free(removed_data);
     
     printf("List content after operations: ");
     list_foreach(list, print_int, NULL);

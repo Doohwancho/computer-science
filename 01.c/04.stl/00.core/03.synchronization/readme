@@ -1,3 +1,16 @@
+---
+What 
+
+
+malloc() 구현이 완전 low level이 아니라 sys/mmap의 wrapper class API 받아서 쓰듯,
+thread도 커널 레벨이라 직접은 못건든다.
+대신 `#include <pthread.h>`를 써서 구현한다.
+
+
+---
+TODO 
+
+
 1. mutex
 2. semaphore
 3. condition variables 
