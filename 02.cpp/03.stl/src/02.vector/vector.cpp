@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept> //for exception class
+#include "vector.h"
 
 template<typename T>
 class KirbyVector {

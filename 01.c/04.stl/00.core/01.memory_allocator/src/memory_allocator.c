@@ -28,13 +28,13 @@ static block_t* find_free_block(size_t size) {
     block_t *current = head;
     while (current) {
         if (current->free && current->size >= size) { //해당 free block이, 요구치 size보다 같거나 커야 해당 block을 반환한다.
-            DEBUG_PRINT("Found free block of size %zu for request of %zu\n", 
-                    current->size, size);
+            // DEBUG_PRINT("Found free block of size %zu for request of %zu\n", 
+            //         current->size, size);
             return current;
         }
         current = current->next;
     }
-    DEBUG_PRINT("No free block found for size %zu\n", size);
+    // DEBUG_PRINT("No free block found for size %zu\n", size);
     return NULL;
 }
 
@@ -55,7 +55,7 @@ static void split_block(block_t *block, size_t size) {
         block->size = size;
         block->next = new_block;
 
-        DEBUG_PRINT("Split block: original=%zu, new=%zu\n", size, new_block->size);
+        // DEBUG_PRINT("Split block: original=%zu, new=%zu\n", size, new_block->size);
     }
 }
 
@@ -64,8 +64,8 @@ static void split_block(block_t *block, size_t size) {
 // Q. my_free()에서 특정 block을 메모리 해제하고, 그 block 앞,뒤를 붙이는 함수인데, 왜 free() 안함? 그냥 노드만 이어 붙이면 메모리 해제는 안한거잖아?
 static void coalesce(block_t *block) {
     if (block->next && block->next->free) {
-        DEBUG_PRINT("Coalescing blocks: %zu + %zu\n", 
-                   block->size, block->next->size);
+        // DEBUG_PRINT("Coalescing blocks: %zu + %zu\n", 
+        //            block->size, block->next->size);
         block->size += BLOCK_SIZE + block->next->size;
         block->next = block->next->next;
         if (block->next)
@@ -76,7 +76,7 @@ static void coalesce(block_t *block) {
 void* my_malloc(size_t size) {
     if (size == 0) return NULL;
     
-    DEBUG_PRINT("\nAllocating %zu bytes\n", size);
+    // DEBUG_PRINT("\nAllocating %zu bytes\n", size);
     
     size = ALIGN(size);
     block_t *block = find_free_block(size);
@@ -93,7 +93,7 @@ void* my_malloc(size_t size) {
                     
         //error handling
         if (block == MAP_FAILED) {
-            DEBUG_PRINT("mmap failed!\n");
+            // DEBUG_PRINT("mmap failed!\n");
             return NULL;
         }
 
@@ -112,14 +112,14 @@ void* my_malloc(size_t size) {
             head->prev = block;
         head = block; //Q. 최신에 할당한 노드를 root node로 넣네? 왜지? A. 단순 구현 편의성 때문. 맨 끝에 붙여도 상관없다.
         
-        DEBUG_PRINT("Created new block of size %zu\n", block->size);
+        // DEBUG_PRINT("Created new block of size %zu\n", block->size);
     }
     
     split_block(block, size);
     block->free = false;
     
-    DEBUG_PRINT("Allocated block at %p, size=%zu\n", 
-               (void*)(block + 1), block->size);
+    // DEBUG_PRINT("Allocated block at %p, size=%zu\n", 
+    //            (void*)(block + 1), block->size);
 
     //메모리 레이아웃:
     //
@@ -135,7 +135,7 @@ void my_free(void *ptr) {
     
     //ptr-1 가서 메타데이터 찾기 
     block_t *block = ((block_t*)ptr) - 1;
-    DEBUG_PRINT("\nFreeing block at %p, size=%zu\n", ptr, block->size);
+    // DEBUG_PRINT("\nFreeing block at %p, size=%zu\n", ptr, block->size);
     
     block->free = true;
     
@@ -182,8 +182,8 @@ void* my_realloc(void* ptr, size_t size) {
     memcpy(new_ptr, ptr, block->size);
     my_free(ptr);
     
-    DEBUG_PRINT("Reallocated block from %p to %p, new size=%zu\n", 
-               ptr, new_ptr, size);
+    // DEBUG_PRINT("Reallocated block from %p to %p, new size=%zu\n", 
+    //            ptr, new_ptr, size);
                
     return new_ptr;
 }
