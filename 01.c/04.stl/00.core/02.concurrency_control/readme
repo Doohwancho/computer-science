@@ -6,11 +6,20 @@ malloc() 구현이 완전 low level이 아니라 sys/mmap의 wrapper class API �
 thread도 커널 레벨이라 직접은 못건든다.
 대신 `#include <pthread.h>`를 써서 구현한다.
 
-
---- 
-TODO 
-
+원래라면 thread관련 코드는 
 
 1. scheduler 
 2. context switching 
 3. thread pool
+
+구현해야 했지만... concurrency control만 구현하자.
+
+
+---
+TODO 
+
+
+1. mutex
+2. semaphore
+3. condition variables 
+4. read/write lock
