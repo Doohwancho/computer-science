@@ -165,6 +165,65 @@ static void test_coalescing(void) {
 //     printf("Stress test passed\n");
 // }
 
+static void test_memcpy(void) {
+    printf("Running my_memcpy test...\n");
+
+    char src[] = "Hello, World!";
+    char dest[20];
+
+    // Copy using my_memcpy
+    my_memcpy(dest, src, strlen(src) + 1); // +1 to include the null terminator
+
+    // Verify the copy
+    assert(strcmp(src, dest) == 0);
+    printf("my_memcpy test passed\n");
+}
+
+// Test my_memmove
+static void test_memmove(void) {
+    printf("Running my_memmove test...\n");
+
+    char data[] = "Hello, World!";
+    char buffer[20];
+
+    // Copy using my_memmove
+    my_memmove(buffer, data, strlen(data) + 1); // +1 to include the null terminator
+
+    // Verify the copy
+    assert(strcmp(data, buffer) == 0);
+
+    // Test overlapping regions
+    char overlap[] = "123456789";
+    my_memmove(overlap + 3, overlap, 5); // Move "12345" to start at position 4
+
+    // Verify the result
+    assert(strcmp(overlap, "123123459") == 0);
+    printf("my_memmove test passed\n");
+}
+
+// Test my_memset
+static void test_memset(void) {
+    printf("Running my_memset test...\n");
+
+    char buffer[20];
+
+    // Fill buffer with 'A'
+    my_memset(buffer, 'A', 10);
+    buffer[10] = '\0'; // Null-terminate for string comparison
+
+    // Verify the result
+    assert(strcmp(buffer, "AAAAAAAAAA") == 0);
+
+    // Fill buffer with 0
+    my_memset(buffer, 0, 10);
+
+    // Verify the result
+    for (int i = 0; i < 10; i++) {
+        assert(buffer[i] == 0);
+    }
+    printf("my_memset test passed\n");
+}
+
 int main(void) {
     printf("Starting memory allocator tests...\n\n");
     
@@ -176,6 +235,10 @@ int main(void) {
     test_fragmentation();
     test_coalescing();
     // test_stress(); //error! - seg fault!
+
+    test_memcpy();
+    test_memmove();
+    test_memset();
     
     test_teardown();
     

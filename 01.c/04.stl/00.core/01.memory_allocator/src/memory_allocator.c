@@ -199,3 +199,36 @@ void print_memory_list(void) {
     }
     printf("\n");
 }
+
+
+void* my_memcpy(void* dest, const void* src, size_t n) {
+    char* d = (char*)dest;
+    const char* s = (const char*)src;
+    for (size_t i = 0; i < n; i++) {
+        d[i] = s[i];
+    }
+    return dest;
+}
+
+void* my_memmove(void* dest, const void* src, size_t n) {
+    char* d = (char*)dest;
+    const char* s = (const char*)src;
+    if (d < s) {
+        for (size_t i = 0; i < n; i++) {
+            d[i] = s[i];
+        }
+    } else if (d > s) {
+        for (size_t i = n; i > 0; i--) {
+            d[i - 1] = s[i - 1];
+        }
+    }
+    return dest;
+}
+
+void* my_memset(void* ptr, int value, size_t n) {
+    char* p = (char*)ptr;
+    for (size_t i = 0; i < n; i++) {
+        p[i] = (char)value;
+    }
+    return ptr;
+}

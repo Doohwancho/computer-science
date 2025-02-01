@@ -12,4 +12,9 @@ void* my_realloc(void* ptr, size_t size);
 // Debug/utility functions
 void print_memory_list(void);
 
+// for string
+void* my_memcpy(void* dest, const void* src, size_t n);
+void* my_memmove(void* dest, const void* src, size_t n);
+void* my_memset(void* ptr, int value, size_t n);
+
 #endif // ALLOCATOR_H
