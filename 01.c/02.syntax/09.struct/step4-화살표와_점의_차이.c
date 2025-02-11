@@ -13,7 +13,9 @@ typedef struct {
 
 //case1) call by value -> 원본에는 변화 없음.
 void movePointByValue(Point p, int dx, int dy) {
-    p.x += dx;
+    p.x += dx; //Q. 이건 왜 p.x인데, 아래는 왜 p->x지?
+               //A. .은 구조체 "변수"에서 접근할 떄 쓰고, ->은 구조체 "포인터"에서 접근할 떄 씀
+               //ex. p1*->x 이거나, p1.x 이거나.
     p.y += dy;
 }
 
@@ -28,6 +30,9 @@ int main() {
 
     movePointByValue(p1, 1, 2);
     printf("p1.x = %d, p1.y = %d\n", p1.x, p1.y); // p1.x = 0, p1.y = 0
+                                                  // Q. 왜 p1->x가 아니라 p1.x지?
+                                                  // A. .은 구조체 "변수"에서 접근할 떄 쓰고, ->은 구조체 "포인터"에서 접근할 떄 씀
+                                                  // ex. p1*->x 이거나, p1.x 이거나.
 
     movePointByReference(&p1, 3, 4);
     printf("p1.x = %d, p1.y = %d\n", p1.x, p1.y); // p1.x = 3, p1.y = 4

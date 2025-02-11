@@ -8,7 +8,7 @@ typedef struct {
     float gpa;
 } Student;
 
-Student* createStudent(const char* name, int age, float gpa) { //Q. why const?
+Student* createStudent(const char* name, int age, float gpa) { //Q. why const? -> 원본 name값 안바꾸려고?
     Student* student = (Student*)malloc(sizeof(Student));
     if(student == NULL){
         printf("Memory Allocation Failed.\n");
@@ -29,7 +29,7 @@ void printStudent(const Student* student) { //Q. why const? -> 이 데이터 변
 }
 
 int main() {
-    char name[10] = "Foo";
+    char name[10] = "Foo"; //malloc()으로 안하고 바로 "Foo" 입력 가능하구만. 
     // char* name = "John";
     int age = 10;
     float gpa = 4.0;

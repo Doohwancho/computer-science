@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-    int* arr; //pointer to an int
+    int* arr; //int size pointer. arr[0], arr[1] 읽을 때 int byte size만큼 끊어서 읽는다.
     int size = 10;
     int i;
 
@@ -14,7 +14,7 @@ int main() {
         printf("%d ", arr[i]);
     }
 
-    free(arr);
+    free(arr); //malloc()으로 메모리 할당한걸 해제해준다. 
 
     return 0;
 }
