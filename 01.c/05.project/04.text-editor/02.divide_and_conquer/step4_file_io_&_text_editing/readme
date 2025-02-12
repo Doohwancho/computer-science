@@ -1,0 +1,11 @@
+---
+TODO 
+
+
+0. encode: 한글 utf-8 입력시 1byte가 아닌 3byte씩 입력되서 cursor 위치 바뀌는 문제 해결하기. 쉬운문제는 아닌 듯 하다. 
+1. navigation: page up/down navigation shortcut
+2. ui: status bar w/ status message
+3. ui: line number
+4. advanced feature: search text
+5. advanced feature: syntax highlighting
+6. ui: advanced window resize handling
