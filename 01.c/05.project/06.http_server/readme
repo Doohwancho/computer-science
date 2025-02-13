@@ -1,16 +1,76 @@
 ---
+How
+
+
+1. divide and conquer with level design
+2. ask llm which c library I need prior to development
+3. ask llm which functions of the c libraries I should look
+4. read documentation
+5. see basic use-cases
+6. implement it to my project 
+7. try to optimize
+
+
+---
 TODO 
 
-1. handle http GET request
-2. handle http POST request
-3. use queue for request handling
-4. use maps for for routing 
-5. use vector for response construction
----
-advanced features
 
-6. support basic CRUD 
-7. support for multi-threading
-8. connection pooling
-9. websocket communication 
+Step 5: HTTP Protocol Extensions
 
+Complete HTTP/1.1 support
+
+Keep-Alive connections
+Chunked transfer encoding
+Proper header parsing and validation
+Connection pooling
+
+
+Request pipelining
+Gzip compression support
+HTTP/2 support (much more complex)
+
+Step 6: Security Features
+
+SSL/TLS support (HTTPS)
+Basic authentication
+Rate limiting
+Path traversal protection
+XSS protection headers
+CORS support
+Security headers (HSTS, CSP, etc.)
+
+Step 7: Caching & Performance
+
+File-based caching
+Memory caching
+ETags support
+Conditional GET (If-Modified-Since)
+Response compression
+Static file optimization
+
+Step 8: Logging & Monitoring
+
+Access logging
+Error logging
+Performance metrics
+Monitoring endpoints
+Request tracing
+Debug mode
+
+Step 9: Configuration & Management
+
+Config file support
+Virtual hosts
+Dynamic module loading
+Graceful shutdown/restart
+Process management
+Resource limits
+
+Step 10: Advanced Features
+
+WebSocket support
+Reverse proxy capabilities
+Load balancing
+URL rewriting
+CGI/FastCGI support
+API Gateway features
