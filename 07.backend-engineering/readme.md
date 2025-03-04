@@ -11,7 +11,8 @@ Concepts
 
 
 a. backend communication design patterns\
-b. backend execution patterns
+b. backend execution patterns\
+c. single thread event loop vs multi thread
 
 
 ---\
