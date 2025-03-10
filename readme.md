@@ -15,8 +15,8 @@ B. Operating System\
 C. Network\
 D. Assembly\
 E. Compiler\
-F. C\
-G. Backend Engineering\
-Z. Explore!
+F. Assembly\
+G. C\
+H. C++\
+I. Backend Engineering
 
-x. Verilog!

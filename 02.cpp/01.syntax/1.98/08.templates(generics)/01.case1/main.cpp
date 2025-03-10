@@ -2,7 +2,6 @@
 #include "my_template.h"
 
 //java의 generic인 듯 
-
 int main() {
     MyTemplate<int> intTemplate(42);
     std::cout << intTemplate.getData() << std::endl;    
