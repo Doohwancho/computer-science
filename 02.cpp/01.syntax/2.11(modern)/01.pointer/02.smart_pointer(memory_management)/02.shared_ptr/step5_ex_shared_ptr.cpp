@@ -39,7 +39,7 @@ void processResource(std::shared_ptr<Resource> resource) {
 }
 
 int main() {
-    // 일반 포인터 사용 시 메모리 누수 가능성 있음 ㅇㅇ (까먹고 delete 안 하면 ㅅㄲ)
+    // 일반 포인터 사용 시 메모리 누수 가능성 있음 ㅇㅇ (까먹고 delete 안 하면...)
     // Resource* rawResource = new Resource("Raw 리소스");
     
     // 공유 포인터: 참조 카운트 기반 자동 메모리 관리 ㅇㅇ

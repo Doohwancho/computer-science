@@ -2,9 +2,9 @@
 #include <memory>
 
 
-//what is unique pointer?
-//      unique pointer is a pointer that can only be owned by one object.
-//      When the object that owns the unique pointer is destroyed, the pointer is also destroyed.
+//Q. what is unique pointer?
+//A. 소유권 명확하게 하려고. unique_ptr은 한 객체를 한 포인터만 가리킬 수 있음. 이거 쓰면 메모리 관리 더 명확해짐.
+//   smart_ptr의 종류라 객체 소멸되면 이 포인터도 같이 소멸됨 
 
 class MyClass {
 public:
