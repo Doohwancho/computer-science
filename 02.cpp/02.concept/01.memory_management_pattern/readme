@@ -1,0 +1,24 @@
+---
+memory 관리 patterns in c++
+
+1. RAII (Resource Acquisition Is Initialization)
+    - C++에서 가장 기본적인 메모리 관리 패턴
+    - 리소스 획득을 객체 초기화와 묶고, 소멸자에서 자동으로 해제
+    - 이 패턴은 C++ 초기부터 존재했으며, 예외 안전성의 핵심
+    - ex. lock()을 생성자에서 걸고 unlock()을 소멸자에서 검 
+2. Smart Pointers (C++11에서 표준화)
+    - std::unique_ptr: 단일 소유권 모델, 소유권 이전만 가능
+    - std::shared_ptr: 참조 카운팅 기반 공유 소유권
+    - std::weak_ptr: 순환 참조 방지용 비소유 참조
+3. std::move()
+    - 불필요한 복사를 줄이고 리소스 소유권을 효율적으로 이전
+    - std::move와 이동 생성자/대입 연산자로 구현
+4. Pimpl (Pointer to Implementation)
+    - 구현 세부사항을 숨기고 컴파일 의존성 줄이는 패턴
+    - C++11의 unique_ptr로 더 안전하게 구현 가능
+5. Copy-on-Write (COW)
+    - 원본 객체를 변경할 때만 복사하는 최적화 기법
+    - C++ 표준 라이브러리에 직접적으로 포함되지는 않지만 구현 가능한 패턴
+6. Memory Pools
+    - 작은 객체들을 위한 메모리 할당 최적화
+    - std::allocator와 커스텀 할당자로 구현
