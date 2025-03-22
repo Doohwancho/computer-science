@@ -2,7 +2,7 @@
 Objective
 
 
-Understand how computer works, not c syntax.
+Understand how computer works
 
 
 
@@ -10,13 +10,13 @@ Understand how computer works, not c syntax.
 Fields
 
 
-A. Computer Architecture\
-B. Operating System\
-C. Network\
-D. Assembly\
-E. Compiler\
-F. Assembly\
-G. C\
-H. C++\
-I. Backend Engineering
+A. assembly\
+B. C\
+C. C++\
+D. Computer Architecture\
+E. Operating System\
+F. Network\
+G. Compiler\
+H. Backend Engineering\
+I. Parallel Programming
 
