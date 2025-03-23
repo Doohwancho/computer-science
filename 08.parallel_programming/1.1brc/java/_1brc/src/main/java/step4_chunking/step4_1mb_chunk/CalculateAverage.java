@@ -1,4 +1,4 @@
-package step4_chunking.step1_256Mb_chunk;
+package step4_chunking.step4_1mb_chunk;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
  * ---
  * what
  *
- * parallel() + memory mapping + chunking(256mb) + streaming
+ * parallel() + memory mapping + chunking(1mb) + streaming
  * parsing 부분은 최대한 심플하게 유지함
  *
  *
@@ -29,13 +29,30 @@ import java.util.concurrent.Future;
  * step1_baseline) 195.28s user 5.10s system 98% cpu 3:22.42 total
  * step2_parallel) 318.59s user 48.54s system 314% cpu 1:56.70 total
  * step4_1_memory_map + chunking(256mb) + streaming)  296.57s user 16.67s system 463% cpu 1:07.58 total
+ * step4_2_memory_map + chunking(100mb) + streaming)  301.61s user 17.55s system 445% cpu 1:11.70 total
+ * step4_3_memory_map + chunking(10mb) + streaming) 281.75s user 16.52s system 506% cpu 58.909 total
+ * step4_4_memory_map + chunking(1mb) + streaming) 300.93s user 17.10s system 474% cpu 1:06.96 total
+ *
+ *
+ * ---
+ * 10mb chunk로 자를 때 제일 성능이 좋네?
+ *
+ * Q. 왜 chunk size가 달라지면 결과값이 달라지는거지?
+ *
+ * 너무 큰 청크(256MB)는 일부 쓰레드가 너무 오래 작업하는 동안 다른 쓰레드는 일찍 완료되어 CPU 코어가 유휴 상태가 될 수 있음.
+ * 어떤 쓰레드가 일이 먼저 끝났는데 다른 쓰레드가 아직 일중이면, 기다려야 함.
+ * 만약 10mb였다면 기다리는 일이 있어도. 일이 금방 끝났을텐데.
+ *
+ * 반면 chunk size가 너무 작아도(ex. 1mb) context switching을 너무 많이해서 context switching cost가 듬.
+ * 또한 parsing 부분에서 보면 라인 경계 예외 처리 부분이 있는데, 더 잘게 자른 경우에 여기서 오버헤드가 더 발생함 -> 더 느려짐
+ *
  *
  */
 class CalculateAverage {
     
     private static final String FILE = "measurements.txt";
     // Change this value for your experiments
-    private static final int CHUNK_SIZE = 256 * 1024 * 1024; // 256MB chunks
+    private static final int CHUNK_SIZE = 1 * 1024 * 1024; // 1MB chunks
     
     private static record ResultRow(double min, double mean, double max) {
         public String toString() {

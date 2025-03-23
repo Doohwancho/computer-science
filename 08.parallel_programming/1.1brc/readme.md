@@ -20,6 +20,7 @@ Concepts
     3. parallel :white_check_mark:
     4. memory allocation: memory mapping :white_check_mark:
     5. memory allocation: direct buffer :white_check_mark:
+    6. chunking :white_check_mark:
 - c
 - c++
 - go

@@ -1,4 +1,4 @@
-package step4_chunking.step1_256Mb_chunk;
+package step4_chunking.step3_10mb_chunk;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
  * ---
  * what
  *
- * parallel() + memory mapping + chunking(256mb) + streaming
+ * parallel() + memory mapping + chunking(10mb) + streaming
  * parsing 부분은 최대한 심플하게 유지함
  *
  *
@@ -29,13 +29,15 @@ import java.util.concurrent.Future;
  * step1_baseline) 195.28s user 5.10s system 98% cpu 3:22.42 total
  * step2_parallel) 318.59s user 48.54s system 314% cpu 1:56.70 total
  * step4_1_memory_map + chunking(256mb) + streaming)  296.57s user 16.67s system 463% cpu 1:07.58 total
+ * step4_2_memory_map + chunking(100mb) + streaming)  301.61s user 17.55s system 445% cpu 1:11.70 total
+ * step4_3_memory_map + chunking(10mb) + streaming) 281.75s user 16.52s system 506% cpu 58.909 total
  *
  */
 class CalculateAverage {
     
     private static final String FILE = "measurements.txt";
     // Change this value for your experiments
-    private static final int CHUNK_SIZE = 256 * 1024 * 1024; // 256MB chunks
+    private static final int CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunks
     
     private static record ResultRow(double min, double mean, double max) {
         public String toString() {
