@@ -1,17 +1,27 @@
+// standard lib
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <pthread.h>
+
+// file related 
+#include <unistd.h> //read(), write(), etc
+#include <fcntl.h> //file descriptor (read, write flag) 
+
+// socket related 
 #include <sys/socket.h>
-#include <sys/event.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <fcntl.h>
+#include <netinet/in.h>
+
+// 비동기적 처리 
+#include <pthread.h>
+#include <sys/event.h>
+#include <sys/uio.h>
+#include <sys/types.h>
+
+// util 
+#include <sys/time.h>
 #include <errno.h>
+
 
 #define PORT 8080
 #define BUFFER_SIZE 4096

@@ -6,3 +6,14 @@ buffer management
 
 
 Memory Allocator → Dynamic Array → String Library
+
+
+---
+curiosity 
+
+
+Q. string에 concurrency control 필요함?
+A. ㄴㄴ. 
+1. string in c is value-based, not reference based.
+2. 보통 string이 local variable로 쓰임(thread-safe by default)
+3. 보통 local variable로 안쓰이면 immutable shared constant (naturally thread-safe)
