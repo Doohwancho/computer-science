@@ -1,6 +1,6 @@
-package step1_baseline;
+package step5_parse._step1_baseline;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,10 +10,75 @@ import java.util.TreeMap;
 import java.util.stream.Collector;
 
 /*
----
-Outcome
 
-baseline) 195.28s user 5.10s system 98% cpu 3:22.42 total
+baseline + parallel()
+
+파싱 방식: split(";") 사용
+
+`.map(l -> new Measurement(l.split(";")))` 이 코드가 문제임
+
+문제점:
+1. .split()을 내부적으로 regex를 써서 찾는데, 이 작업이 오버헤드가 크다고 함.
+2. .split()은 내부적으로 ArrayList<String>을 만들어서 String 추가한 후에 String[]으로 형변환 하나봄.
+
+이게 split()의 내부 코드인데, 중간에 ArrayList<>만들고 값 추가해 준 다음, 다시 String[]으로 바꿔주는 형변환 또 해줌
+
+```java
+public String[] split(String regex, int limit) {
+    char ch = 0;
+    if (((regex.length() == 1 &&
+         ".$|()[{^?*+\\".indexOf(ch = regex.charAt(0)) == -1) ||
+         (regex.length() == 2 &&
+          regex.charAt(0) == '\\' &&
+          (((ch = regex.charAt(1))-'0')|('9'-ch)) < 0 &&
+          ((ch-'a')|('z'-ch)) < 0 &&
+          ((ch-'A')|('Z'-ch)) < 0)) &&
+        (ch < Character.MIN_HIGH_SURROGATE ||
+         ch > Character.MAX_LOW_SURROGATE))
+    {
+        int off = 0;
+        int next = 0;
+        boolean limited = limit > 0;
+        ArrayList<String> list = new ArrayList<>(); <------------------- 이 부분 !!!!!!!!!!!!!!!!!!!!!!!!!!
+        while ((next = indexOf(ch, off)) != -1) {
+            if (!limited || list.size() < limit - 1) {
+                list.add(substring(off, next));
+                off = next + 1;
+            } else {    // last one
+                //assert (list.size() == limit - 1);
+                int last = length();
+                list.add(substring(off, last));
+                off = last;
+                break;
+            }
+        }
+        // If no match was found, return this
+        if (off == 0)
+            return new String[]{this};
+
+        // Add remaining segment
+        if (!limited || list.size() < limit)
+            list.add(substring(off, length()));
+
+        // Construct result
+        int resultSize = list.size();
+        if (limit == 0) {
+            while (resultSize > 0 && list.get(resultSize - 1).isEmpty()) {
+                resultSize--;
+            }
+        }
+        String[] result = new String[resultSize];
+        return list.subList(0, resultSize).toArray(result); <------------------ ArrayList<> -> String[] 형변환 또 해줌
+    }
+    return Pattern.compile(regex).split(this, limit);
+}
+```
+
+
+---
+실험결과
+
+step1_baseline) 318.59s user 48.54s system 314% cpu 1:56.70 total
 
  */
 
@@ -74,7 +139,7 @@ class CalculateAverage {
                 return new ResultRow(agg.min, agg.sum / agg.count, agg.max);
             });
         
-        Map<String, ResultRow> measurements = new TreeMap<>(Files.lines(Paths.get(FILE))
+        Map<String, ResultRow> measurements = new TreeMap<>(Files.lines(Paths.get(FILE)).parallel()
             .map(l -> new Measurement(l.split(";")))
             .collect(groupingBy(m -> m.station(), collector))); //groupBy()가 map-reduce에 셔플링 역할을 함. 키값을 기준으로 데이터를 모음.
         

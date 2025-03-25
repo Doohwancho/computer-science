@@ -1,4 +1,4 @@
-package step3_memory_allocation.step4_direct_buffer;
+package step3_memory_allocation.step5_direct_buffer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -36,10 +36,10 @@ import java.util.List;
  * ---
  * 실험결과
  *
- * step1_baseline) 195.28s user 5.10s system 98% cpu 3:22.42 total
- * step2_parallel) 318.59s user 48.54s system 314% cpu 1:56.70 total
- * step3-3_memory_map + chunking + streaming) 278.95s user 15.91s system 459% cpu 1:04.14 total
- * step3-4_direct_buffer) 327.66s user 5.19s system 616% cpu 53.973 total
+ * baseline) 195.28s user 5.10s system 98% cpu 3:22.42 total
+ * step3-1_buffered reader) 198.69s user 6.25s system 94% cpu 3:37.38 total
+ * step3-4_memory_map + chunking + streaming) 278.95s user 15.91s system 459% cpu 1:04.14 total
+ * step3-5_direct_buffer) 327.66s user 5.19s system 616% cpu 53.973 total
  *
  *
  * ---

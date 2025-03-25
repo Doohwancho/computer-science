@@ -1,11 +1,10 @@
-package step3_memory_allocation.step2_1gb_chunk_memory_mapping;
+package step3_memory_allocation.step3_1gb_chunk_memory_mapping;
 
 import static java.util.stream.Collectors.groupingBy;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -20,13 +19,13 @@ import java.util.stream.Stream;
  * ---
  * what
  *
- * baseline + parallel() + memory mapping + 1gb chunking
+ * baseline + memory mapping + 1gb chunking
  *
  * step1에서 memory mapping할 때, 최대 2gb까지 가져올 수 있는데, 1billion lines txt 파일은 13GiB라 1기가씩 쪼개서 처리하기로 함.
  *
  *
  * ---
- * results
+ * error!
  *
  * Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
  * 	at java.base/java.util.Arrays.copyOf(Arrays.java:3512)
@@ -44,10 +43,6 @@ import java.util.stream.Stream;
  * 왜냐면 13GiB 파일 한줄한줄 읽어서 한줄마다 List<String>에 담고 그걸 합쳐서 처리하는데,
  * String 객체 생성에 너무 많은 메모리를 썼기 때문
  *
- */
-/**
- * Baseline implementation + parallel() + Memory Mapping only
- * No other optimizations
  */
 class CalculateAverage {
     
@@ -123,7 +118,7 @@ class CalculateAverage {
             // Process the combined stream in parallel (same as baseline + parallel)
             Map<String, ResultRow> measurements = new TreeMap<>(
                 combinedStream
-                    .parallel()
+//                    .parallel()
                     .map(l -> {
                         String[] parts = l.split(";");
                         return new Measurement(parts);

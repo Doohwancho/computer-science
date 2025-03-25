@@ -1,4 +1,4 @@
-package step6_parse.step2_SWAR;
+package step10_fastest_solutions.step1_기존_최적화_모두_적용;
 
 /*
  *  Copyright 2023 The original authors
@@ -100,6 +100,8 @@ class CalculateAverage_royvanrijn {
                 
                 long segmentEnd = segment.end();
                 try (var fileChannel = (FileChannel) Files.newByteChannel(Path.of(FILE), StandardOpenOption.READ)) {
+                    //Q. 이 코드는 기존 memory mapping할 떄 썼던 코드랑 조금 다른데?
+                    //A. `FileChannel channel = FileChannel.open(path, StandardOpenOption.READ);` 얘랑 같은 코드라고 봐도 된다고 함.
                     
                     //step7. core 갯수(8개)만큼 나눈 파일을 읽는다.
                     var bb = fileChannel.map(FileChannel.MapMode.READ_ONLY, segment.start(), segmentEnd - segment.start());
@@ -109,6 +111,11 @@ class CalculateAverage_royvanrijn {
                     
                     //step9. little endian으로 읽도록 강제(java는 big endian)
                     bb.order(ByteOrder.LITTLE_ENDIAN);
+                    //Q. 왜 little endian으로 강제하지?
+                    //A. 대부분의 현대 CPU가 Little Endian임ㅋㅋ 인텔, AMD, ARM 다 리틀엔디안임
+                    //   근데 Java는 기본으로 Big Endian을 씀. 그래서 CPU가 바이트 순서 바꾸는데 시간 씀.
+                    //   ByteBuffer에서 Little Endian으로 강제하면: CPU가 네이티브 순서 그대로 읽을 수 있어서 빨라짐
+                    //   특히 getLong() 같은 다중 바이트 연산에서 차이 더 커짐
                     
                     //step10. create custom hashmap without safety checks + 객체를 String으로 안받고 byte[]로 받음 for performance
                     BitTwiddledMap measurements = new BitTwiddledMap();
@@ -242,12 +249,17 @@ class CalculateAverage_royvanrijn {
         return segments;
     }
     
+    // 파일을 코어 수 만큼 8등분 할 떄,
+    // 대충 등분하면 라인 중간에 잘릴 수 있으니까
+    // raf.seek()랑 raf.read()로 딱 개행문자(\n)까지 찾아서 거기서 자르는거임
+    // 그다음에 그 쪼갠 부분들을 메모리 매핑으로 읽는거지
+    // 이렇게 하면 각 쓰레드가 딱 라인 단위로 끊어진 청크만 처리하니까 훨씬 깔끔함. 뒤에서 지저분하게 체크할 필요도 없고.
     private static long findSegment(int i, int skipSegment, RandomAccessFile raf, long location, long fileSize) throws IOException {
         if (i != skipSegment) {
             raf.seek(location);
             while (location < fileSize) {
                 location++;
-                if (raf.read() == '\n')
+                if (raf.read() == '\n') // \n 개행문자 기준으로 자름
                     return location;
             }
         }
@@ -297,7 +309,13 @@ class CalculateAverage_royvanrijn {
      */
     class BitTwiddledMap {
         private static final int SIZE = 16384; // A bit larger than the number of keys, needs power of two
+        //Q. 왜 숫자를 이렇게 조절한거지?
+        //A. hashmap에서 collision이 병목지점이 될 수 있으니 막으려고.
+        //   해시 충돌 해결은 선형 탐색(linear probing) 방식으로 함. 충돌나면 다음 칸 보고, 또 충돌나면 또 다음 칸 보고... 이런식임
+        //   해시 테이블 크기를 **16384(2^14)**로 잡았는데, 이게 실제 측정소 수(약 10,000개)보다 더 크게 잡아서 충돌 확률 줄임
+        //   2의 거듭제곱으로 해서 모듈로 연산을 비트 연산으로 바꿀 수 있게 함 (?)
         private int[] indices = new int[SIZE]; // Hashtable is just an int[]
+        
         
         BitTwiddledMap() {
             // Optimized fill with -1, fastest method:
@@ -313,6 +331,7 @@ class CalculateAverage_royvanrijn {
         
         private List<Entry> values = new ArrayList<>(512);
         
+        //이 커스텀 해시맵의 키는 String이 아닌 byte[]라 new String()으로 객체 10억개씩 안만들어줘서 되서 gc 없으니까 더 빠름.
         record Entry(int hash, byte[] key, Measurement measurement) {
             @Override
             public String toString() {
