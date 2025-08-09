@@ -14,15 +14,68 @@ client <-> server가 TCP/IP, HTTP protocol 약속을 이용한 통신을 하는�
 1. client가 http request header에 RFC2616에 약속된 header를 보내면,
 2. server가 이를 파싱해서, 요청한 header에 알맞는 http response를 보내줌.
 
+## b. features 
+1. 기본 HTTP 통신
+	- HTTP/1.1 프로토콜 지원
+	- GET 및 POST 메소드 처리
+	- 200 OK, 201 Created, 404 Not Found 등 HTTP 상태 코드 응답
+2. 정적 파일 제공
+	- /files/{filename} 경로로 파일 요청 처리
+	- 명령줄 인자로 지정된 디렉토리에서 파일 검색 및 제공
+	- 파일 업로드 (POST 요청 처리)
+3. 에코 서비스
+	- /echo/{message} 경로로 요청된 메시지를 그대로 응답으로 반환
+4. User-Agent 정보 제공
+	- /user-agent 경로로 요청 시 클라이언트의 User-Agent 정보 반환
+5. 콘텐츠 압축 (gzip)
+	- Accept-Encoding: gzip 헤더가 있는 요청에 대해 gzip 압축 응답 제공
+	- zlib 라이브러리를 사용한 압축 및 압축 해제 기능
+6. 동시 연결 처리
+	- 프로세스 포킹(fork)을 통한 동시 클라이언트 연결 처리
 
 
-## b. RFC2616
+## c. takeaways
+1. 소켓 프로그래밍 기초
+	- 소켓 생성, 바인딩, 리스닝, 연결 수락의 기본 흐름
+	- 네트워크 바이트 순서 처리 (htons, htonl 함수 사용)
+	- 소켓 옵션 설정 (SO_REUSEPORT 등)
+2. HTTP 프로토콜 이해
+	- HTTP 요청/응답 구조 분석 및 생성
+	- HTTP 헤더 파싱 및 처리
+	- 컨텐츠 타입 및 인코딩 처리
+3. 문자열 처리 기법
+	- 문자열 토큰화 (strtok, strtok_r 사용)
+	- 문자열 버퍼 관리와 안전한 문자열 처리
+	- 다양한 문자열 연산 함수 활용
+4. 파일 시스템 인터페이스
+	- 파일 읽기/쓰기 작업
+	- 디렉토리 경로 처리
+	- 파일 업로드 구현
+5. 프로세스 관리
+	- fork()를 사용한 멀티프로세싱
+	- 자식 프로세스를 통한 클라이언트 요청 처리
+6. 데이터 압축
+	- zlib 라이브러리를 사용한 gzip 압축/해제
+	- 압축된 데이터 처리 방법
+7. 메모리 관리
+	- 동적 메모리 할당 및 해제
+	- 메모리 누수 방지를 위한 패턴
+8. 에러 처리
+	- 시스템 호출 에러 검사 및 처리
+	- 적절한 에러 메시지 출력
+9. HTTP 서버 구조
+	- 요청 파싱, 라우팅, 응답 생성의 기본 흐름
+	- 헤더와 바디를 포함한 HTTP 메시지 구성
+
+
+# B. questions?
+## a. RFC2616
 http/1.1 프로토콜 만들 때,
 어느걸 기준으로 프로토콜 만들어야 함?
 할 때 RFC2616을 참고하자.
 
 
-## c. features
+## b. features
 
 ### 1. tcp/ip 3 way handshake 어떻게 구현했지?
 TCP/IP's 3 way handshake is covered under the hood on os-layer.
@@ -72,7 +125,7 @@ processResponse()에서 http request가 GET이냐 POST냐에 따라 분기처리
 3. 서버에서 보관중인 플레이어의 상태값을 mutex같은 동기화 기법을 써서 변경
 
 
-# B. how to build & run on mac?
+# C. how to build & run on mac?
 
 ## a. compile server
 shell1
